@@ -1,7 +1,0 @@
-
-Parsing: 'echo'
-Token 0: [echo]
-
-Parsing: 'hello world'
-Token 0: [hello]
-Token 1: [world]

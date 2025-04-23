@@ -1,17 +1,16 @@
-#include"minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils2.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/21 11:30:31 by abjellal          #+#    #+#             */
+/*   Updated: 2025/04/22 14:13:15 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void free_tokens(t_token *tokens)
-{
-    t_token *tmp;
-    
-    while (tokens != NULL)
-    {
-        tmp = tokens;
-        tokens = tokens->next;
-        free(tmp->value);
-        free(tmp);
-    }
-}
+#include"minishell.h"
 
 char *extract_word(char **str)
 {
@@ -53,9 +52,19 @@ int get_operator_type(char *op)
     if (*op == '|')
         return (TOKEN_PIPE);
     if (*op == '>')
-        return (op[1] == '>' ? TOKEN_APPEND : TOKEN_REDIR_OUT);
+    {
+        if (op[1] == '>')
+            return (TOKEN_APPEND);
+        else
+            return (TOKEN_REDIR_OUT);
+    }
     if (*op == '<')
-        return (op[1] == '<' ? TOKEN_HEREDOC : TOKEN_REDIR_IN);
+    {
+        if (op[1] == '<')
+            return (TOKEN_HEREDOC);
+        else
+            return (TOKEN_REDIR_IN);
+    }
     return (TOKEN_WORD);
 }
 
@@ -82,48 +91,4 @@ void add_token(t_token **token_list, char *value, int type)
             last = last->next;
         last->next = new_token;
     }
-}
-
-char    *ft_strndup(const char *s, size_t n)
-{
-    char    *dup;
-    size_t  len;
-    size_t  i;
-
-    len = 0;
-    while (s[len] && len < n)
-        len++;
-    
-    dup = (char *)malloc(len + 1);
-    if (!dup)
-        return (NULL);
-    
-    i = 0;
-    while (i < len)
-    {
-        dup[i] = s[i];
-        i++;
-    }
-    dup[len] = '\0';
-    
-    return (dup);
-}
-
-void *ft_memcpy(void *dst, const void *src, size_t n)
-{
-    unsigned char *d = dst;
-    const unsigned char *s = src;
-    while (n--) *d++ = *s++;
-    return dst;
-}
-
-// Minimal ft_strdup
-char *ft_strdup(const char *s1)
-{
-    size_t len = 0;
-    while (s1[len]) len++;
-    char *dup = malloc(len + 1);
-    if (!dup) return NULL;
-    for (size_t i = 0; i <= len; i++) dup[i] = s1[i];
-    return dup;
 }

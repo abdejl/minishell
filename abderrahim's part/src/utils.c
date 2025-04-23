@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/20 13:05:27 by abjellal          #+#    #+#             */
-/*   Updated: 2025/04/20 13:39:39 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/04/21 11:29:11 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,3 @@ int is_operator(char *str)
         return (1);
     return (0);
 }
-

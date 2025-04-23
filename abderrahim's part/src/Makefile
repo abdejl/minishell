@@ -1,14 +1,14 @@
 NAME        = minishell
 CC          = gcc
-CFLAGS      = -Wall -Wextra -Werror
+CFLAGS      = -Wall -Wextra -Werror -I$(INCLUDES) -I$(LIBFT_DIR)
 INCLUDES    = includes
-#LIBFT       = libft/libft.a
+LIBFT_DIR   = ../libft
+LIBFT       = $(LIBFT_DIR)/libft.a
+LIBS        = $(LIBFT)
 
 SRC_DIR     = src
-SRCS        = parsing.c utils.c utils2.c
+SRCS        = parsing.c utils.c utils2.c utils_3.c utils_4.c free_utils.c
 OBJS        = $(SRCS:.c=.o)
-
-LIBFT_DIR   = libft
 
 all: $(NAME)
 
@@ -23,11 +23,11 @@ $(LIBFT):
 
 clean:
 	rm -f $(OBJS)
-#	@make -C $(LIBFT_DIR) clean
+	@make -C $(LIBFT_DIR) clean
 
 fclean: clean
 	rm -f $(NAME)
-#	@make -C $(LIBFT_DIR) fclean
+	@make -C $(LIBFT_DIR) fclean
 
 re: fclean all
 
