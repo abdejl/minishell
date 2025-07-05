@@ -29,10 +29,22 @@ int exec_builtin(t_shell *shell, t_cmd *cmd)
         return (ft_export(shell, cmd));
     else if (!ft_strcmp(cmd->args[0], "unset"))
     {
-        if(!cmd->args[1])
-            return 0;
-        ft_unset(&shell->env_list, cmd->args[1]);
-        return (0);
+          int i = 1;
+          int has_error = 0;
+
+          while (cmd->args[i])
+          {
+            if (!is_valid_identifier(cmd->args[i]))
+            {
+                is_valid_identifier(cmd->args[i]);
+                has_error = 1;
+            }
+            else
+                ft_unset(&shell->env_list, cmd->args[i]);
+            i++;
+          }
+          shell->exit_status = has_error;
+          return (0);
     }
     else if (!ft_strcmp(cmd->args[0], "env"))
         return (ft_env(shell->env_list));

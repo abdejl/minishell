@@ -38,7 +38,8 @@ int mini_exit(t_shell *shell, t_cmd *cmd)
     long    code;
 
     args = cmd->args;
-    ft_putendl_fd("exit", STDOUT);
+    if (!cmd->next) //
+        ft_putendl_fd("exit", STDOUT);
     if (!args[1])
         exit(shell->exit_status);
     if (is_numeric(args[1]) == 0)

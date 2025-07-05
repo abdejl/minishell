@@ -1,17 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By:                                            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/29                              #+#    #+#             */
-/*   Updated: 2025/04/29                             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "minishell.h"
-#include <errno.h>
 int ft_strcmp(const char *s1, const char *s2)
 {
 	while (*s1 && *s1 == *s2)
@@ -110,6 +98,12 @@ int	cd_builtin(t_shell *shell, t_cmd *cmd)
 	char	*path;
 	
 	oldpwd = NULL;
+	if (cmd->args[1] && cmd->args[2])
+	{
+		ft_putendl_fd("cd: too many arguments", STDERR);
+		shell->exit_status = 1;
+		return (1);
+	}
 	if (getcwd(cwd, sizeof(cwd)))
 		oldpwd = ft_strdup(cwd);
 	path = get_cd_path(shell, cmd);

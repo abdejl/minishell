@@ -80,7 +80,6 @@ int handle_heredoc(t_redirect *redir)
     
     if (pipe(fd) == -1)
         return (-1);
-    
     while (1)
     {
         line = readline("> ");

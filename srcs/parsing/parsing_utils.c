@@ -1,19 +1,19 @@
 #include "minishell.h"
 
-t_token	*handle_quoted_string(char **input, t_token *tokens)
-{
-	char	*quoted;
+// t_token	*handle_quoted_string(char **input, t_token *tokens)
+// {
+// 	char	*quoted;
 
-	quoted = extract_quoted_string(input);
-	if (!quoted)
-	{
-		free_tokens(tokens);
-		return (NULL);
-	}
-	add_token(&tokens, quoted, TOKEN_WORD);
-	free(quoted);
-	return (tokens);
-}
+// 	quoted = extract_quoted_string(input);
+// 	if (!quoted)
+// 	{
+// 		free_tokens(tokens);
+// 		return (NULL);
+// 	}
+// 	add_token(&tokens, quoted, TOKEN_WORD);
+// 	free(quoted);
+// 	return (tokens);
+// }
 t_token *handle_operator(char **input, t_token *tokens)
 {
     char *op = NULL;

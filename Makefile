@@ -26,6 +26,9 @@ SRCS = srcs/main.c \
        srcs/parsing/utils2.c \
        srcs/parsing/utils_3.c \
        srcs/parsing/utils_4.c \
+       srcs/parsing/expander_utils.c \
+       srcs/parsing/expander_utils_2.c \
+       srcs/parsing/expander.c \
        srcs/utils/signal_handler.c \
        srcs/utils/builtins_utils.c \
        srcs/utils/free_utils.c

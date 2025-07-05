@@ -1,7 +1,6 @@
 
 #include "minishell.h"
 
-/* التحقق مما إذا كان الحرف رقماً */
 int	ft_isdigit(int c)
 {
 	if (c >= '0' && c <= '9')

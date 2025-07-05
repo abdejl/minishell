@@ -1,0 +1,87 @@
+#include "minishell.h"
+
+void	append_str_node(t_str_list **list, char *str)
+{
+	t_str_list	*new_node;
+	t_str_list	*current;
+
+	if (!str)
+		return ;
+	new_node = malloc(sizeof(t_str_list));
+	if (!new_node)
+		return ;
+	new_node->str = str;
+	new_node->next = NULL;
+	if (!*list)
+	{
+		*list = new_node;
+		return ;
+	}
+	current = *list;
+	while (current->next)
+		current = current->next;
+	current->next = new_node;
+}
+
+char	*join_str_list(t_str_list *list)
+{
+	t_str_list	*current;
+	char		*result;
+	size_t		total_len;
+
+	total_len = 0;
+	current = list;
+	while (current)
+	{
+		total_len += ft_strlen(current->str);
+		current = current->next;
+	}
+	result = ft_calloc(total_len + 1, sizeof(char));
+	if (!result)
+		return (NULL);
+	current = list;
+	while (current)
+	{
+		ft_strlcat(result, current->str, total_len + 1);
+		current = current->next;
+	}
+	// free_str_list(list);
+	return (result);
+}
+
+static char	*get_var_name(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '?')
+		return (ft_strdup("?"));
+	if (!ft_isalpha(str[i]) && str[i] != '_')
+		return (NULL);
+	i++;
+	while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+		i++;
+	return (ft_substr(str, 0, i));
+}
+
+char	*get_var_value(char **str_ptr, t_shell *shell)
+{
+	char	*var_name;
+	char	*value;
+
+	(*str_ptr)++;
+	var_name = get_var_name(*str_ptr);
+	if (!var_name)
+		return (ft_strdup("$"));
+	*str_ptr += ft_strlen(var_name);
+	if (ft_strcmp(var_name, "?") == 0)
+	{
+		free(var_name);
+		return (ft_itoa(shell->exit_status));
+	}
+	value = get_env_value(shell->env_list, var_name);
+	free(var_name);
+	if (!value)
+		return (ft_strdup(""));
+	return (ft_strdup(value));
+}

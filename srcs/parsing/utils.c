@@ -23,51 +23,36 @@ void skip_white_spaces(char **str)
         (*str)++;
 }
 
-int is_quote(char *str)
+int is_quote(char c)
 {
-    if (*str == 34 || *str == 39)
+    if (c == '\"' || c == '\'')
         return (1);
     return (0);
 }
 
-char *extract_quoted_string(char **input)
+char	*extract_quoted_string(char **input, t_shell *shell)
 {
-    char    *result;
-    char    *start;
-    int     length;
-    char    quote_type;
+    char	*start;
+    char	quote_type;
+    char	*result;
 
-    if (!input || !*input || !is_quote(*input))
-        return (NULL); 
+    (void)shell;
     quote_type = **input;
     (*input)++;
     start = *input;
     while (**input && **input != quote_type)
-    {
-        if (**input == '\\' && *(*input + 1))
-            (*input)++;
         (*input)++;
-    }
     if (**input != quote_type)
     {
-        write(2, "Error: Unclosed quote\n",23);
+        print_syntax_error("unclosed quote");
         return (NULL);
     }
-    length = *input - start;
-    result = malloc(length + 1);
-    if (!result)
-        return (NULL);
-    ft_memcpy(result, start, length);
-    result[length] = '\0';
+    result = ft_strndup(start, *input - start);
     (*input)++;
     return (result);
 }
 
-int is_operator(char *str)
+int	is_operator(char c)
 {
-    if (!str)
-        return (0);
-    if (*str == '<' || *str == '>' || *str == '|')
-        return (1);
-    return (0);
+	return (c == '|' || c == '<' || c == '>' || c == ';' || c == '&');
 }

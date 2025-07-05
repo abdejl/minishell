@@ -1,8 +1,4 @@
 #include "minishell.h"
-#include <stdio.h>
-
-#include <stdlib.h>
-#include <string.h>
 
 t_env *new_env_node(char *key, char *value)
 {
