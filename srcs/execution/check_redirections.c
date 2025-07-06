@@ -7,7 +7,7 @@ int handle_input_redirect(t_redirect *redir)
 	fd = open(redir->file, O_RDONLY);
 	if(fd < 0)
 	{
-			ft_putstr_fd("no such file or directory\n", STDERR_FILENO);
+			ft_putstr_fd("No such file or directory\n", STDERR_FILENO);
 			return(-1);
 	}
 	dup2(fd , STDIN_FILENO);
@@ -44,34 +44,6 @@ int handle_append_redirect(t_redirect *redir)
 	close(fd);
 	return(0);
 }
-
-// int check_redirections(t_cmd *cmd)
-// {
-// 	t_redirect *redir = cmd->redirs;
-	
-// 	if(!cmd || !cmd->redirs)
-// 		return(1);
-// 	while(redir)
-// 	{
-// 		if(redir->type == TOKEN_REDIR_IN)
-// 		{
-// 			if(handle_input_redirect(redir) == -1)
-// 				return(-1);
-// 		}
-// 		else if (redir->type == TOKEN_REDIR_OUT)
-// 		{
-// 			if(handle_output_redirect(redir) == -1)
-// 				return(-1);
-// 		}
-// 		else if (redir->type == TOKEN_APPEND)
-// 		{
-// 			if(handle_append_redirect(redir) == -1)
-// 				return(-1);
-// 		}
-// 		redir = redir->next;
-// 	}
-// 	return(0);
-// }
 
 int handle_heredoc(t_redirect *redir)
 {

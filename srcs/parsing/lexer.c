@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/06 10:24:52 by abjellal          #+#    #+#             */
+/*   Updated: 2025/07/06 10:24:52 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static int	handle_quote_token(char **input, t_token **list, t_shell *shell)
@@ -7,7 +19,7 @@ static int	handle_quote_token(char **input, t_token **list, t_shell *shell)
     char	*temp;
     char	quote_str[2];
 
-    quote_str[0] = **input; // Save the quote type (' or ")
+    quote_str[0] = **input;
     quote_str[1] = '\0';
     value = extract_quoted_string(input, shell);
     if (!value)

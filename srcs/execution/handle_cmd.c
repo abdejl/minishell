@@ -82,27 +82,70 @@ char *get_cmd_path(char *cmd_name, t_env *env_list)
     return (NULL);
 }
 
+
 int exec_external(t_shell *shell, t_cmd *cmd)
 {
-    char **envp = env_to_array(shell->env_list);
-    char *path = get_cmd_path(cmd->args[0], shell->env_list);
-    int status = 127;
+    char	**envp;
+    char	*path;
 
-    if (!path) {
-        ft_putstr_fd(cmd->args[0], STDERR_FILENO);  // Just the command name
-        ft_putstr_fd(": command not found\n", STDERR_FILENO);
-    } else {
+    envp = env_to_array(shell->env_list);
+    path = cmd->args[0];
+    if (ft_strchr(path, '/'))
+    {
         execve(path, cmd->args, envp);
-        ft_putstr_fd("minishell: ", STDERR_FILENO);  // Keep prefix for execution errors
-        ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-        ft_putstr_fd(": execution failed\n", STDERR_FILENO);
-        status = 126;
-        free(path);
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd(path, STDERR_FILENO);
+        ft_putstr_fd(": ", STDERR_FILENO);
+        ft_putendl_fd(strerror(errno), STDERR_FILENO);
+        free_str_array(envp);
+        exit(126);
     }
-    
-    free_str_array(envp);
-    return (status);
+    else
+    {
+        path = get_cmd_path(cmd->args[0], shell->env_list);
+        if (!path)
+        {
+            ft_putstr_fd("minishell: ", STDERR_FILENO);
+            ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+            ft_putendl_fd(": command not found", STDERR_FILENO);
+            free_str_array(envp);
+            exit(127);
+        }
+        execve(path, cmd->args, envp);
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+        ft_putendl_fd(": command not found", STDERR_FILENO);
+        free(path);
+        free_str_array(envp);
+        exit(127);
+    }
 }
+
+
+// int exec_external(t_shell *shell, t_cmd *cmd)
+// {
+//     char **envp = env_to_array(shell->env_list);
+//     char *path = get_cmd_path(cmd->args[0], shell->env_list);
+//     int status = 127;
+
+//     if (!path) {
+//         // ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd("minishell: ", STDERR_FILENO);
+//         ft_putstr_fd("command not found:", STDERR_FILENO);
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd("\n", STDERR_FILENO);
+//     } else {
+//         execve(path, cmd->args, envp);
+//         ft_putstr_fd("minishell: ", STDERR_FILENO);
+//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+//         ft_putstr_fd(": execution failed\n", STDERR_FILENO);
+//         status = 126;
+//         free(path);
+//     }
+    
+//     free_str_array(envp);
+//     return (status);
+// }
 
 int handle_cmd(t_shell *shell, t_cmd *cmd)
 {
