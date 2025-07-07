@@ -18,7 +18,6 @@ SRCS = srcs/main.c \
        srcs/execution/handle_cmd.c \
        srcs/execution/handle_pipes.c \
        srcs/execution/check_redirections.c \
-       srcs/execution/env_utils.c\
        srcs/parsing/lexer.c \
        srcs/parsing/parser.c \
        srcs/parsing/parsing_utils.c \
@@ -30,8 +29,12 @@ SRCS = srcs/main.c \
        srcs/parsing/expander_utils_2.c \
        srcs/parsing/expander.c \
        srcs/utils/signal_handler.c \
+       srcs/utils/env_utils.c\
+       srcs/utils/env_utils_2.c\
+       srcs/utils/pipe_utils.c\
        srcs/utils/builtins_utils.c \
-       srcs/utils/free_utils.c
+       srcs/utils/free_utils.c \
+       srcs/utils/free_utils_2.c
 
 # Compiler settings
 CC = gcc

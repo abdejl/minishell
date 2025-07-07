@@ -1,6 +1,25 @@
 #include "minishell.h"
-#include <sys/wait.h>
-#include <stdlib.h>
+
+void exec_child(t_shell *shell, t_cmd *cmd)
+{
+    set_signal_child();
+    if (check_redirections(cmd) == -1)
+        exit(1);
+    if (is_builtin(cmd))
+        exit(exec_builtin(shell, cmd));
+    exit(exec_external(shell, cmd));
+}
+
+int wait_and_update_exit_status(pid_t pid, t_shell *shell)
+{
+    int status;
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        shell->exit_status = WEXITSTATUS(status);
+    else if (WIFSIGNALED(status))
+        shell->exit_status = 128 + WTERMSIG(status);
+    return (shell->exit_status);
+}
 
 int is_builtin(t_cmd *cmd)
 {
@@ -82,104 +101,50 @@ char *get_cmd_path(char *cmd_name, t_env *env_list)
     return (NULL);
 }
 
-
 int exec_external(t_shell *shell, t_cmd *cmd)
 {
-    char	**envp;
-    char	*path;
+	char **envp = env_to_array(shell->env_list);
+	char *path;
 
-    envp = env_to_array(shell->env_list);
-    path = cmd->args[0];
-    if (ft_strchr(path, '/'))
-    {
-        execve(path, cmd->args, envp);
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(path, STDERR_FILENO);
-        ft_putstr_fd(": ", STDERR_FILENO);
-        ft_putendl_fd(strerror(errno), STDERR_FILENO);
-        free_str_array(envp);
-        exit(126);
-    }
+    if (ft_strchr(cmd->args[0], '/'))
+        path = ft_strdup(cmd->args[0]);
     else
     {
         path = get_cmd_path(cmd->args[0], shell->env_list);
-        if (!path)
-        {
-            ft_putstr_fd("minishell: ", STDERR_FILENO);
-            ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-            ft_putendl_fd(": command not found", STDERR_FILENO);
-            free_str_array(envp);
-            exit(127);
-        }
-        execve(path, cmd->args, envp);
-        ft_putstr_fd("minishell: ", STDERR_FILENO);
-        ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-        ft_putendl_fd(": command not found", STDERR_FILENO);
-        free(path);
-        free_str_array(envp);
-        exit(127);
     }
+	if (!path)
+	{
+		ft_putstr_fd("minishell: ", STDERR_FILENO);
+		ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+		free_str_array(envp);
+		exit(127); 
+	}
+	execve(path, cmd->args, envp);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(cmd->args[0], STDERR_FILENO);
+	ft_putendl_fd(": execution failed", STDERR_FILENO);
+	free(path);
+	free_str_array(envp);
+	exit(126);
 }
-
-
-// int exec_external(t_shell *shell, t_cmd *cmd)
-// {
-//     char **envp = env_to_array(shell->env_list);
-//     char *path = get_cmd_path(cmd->args[0], shell->env_list);
-//     int status = 127;
-
-//     if (!path) {
-//         // ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-//         ft_putstr_fd("minishell: ", STDERR_FILENO);
-//         ft_putstr_fd("command not found:", STDERR_FILENO);
-//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-//         ft_putstr_fd("\n", STDERR_FILENO);
-//     } else {
-//         execve(path, cmd->args, envp);
-//         ft_putstr_fd("minishell: ", STDERR_FILENO);
-//         ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-//         ft_putstr_fd(": execution failed\n", STDERR_FILENO);
-//         status = 126;
-//         free(path);
-//     }
-    
-//     free_str_array(envp);
-//     return (status);
-// }
 
 int handle_cmd(t_shell *shell, t_cmd *cmd)
 {
     pid_t pid;
-    int status;
 
     if (!cmd || !cmd->args || !cmd->args[0])
         return (1);
     if (is_builtin(cmd) && !cmd->next && !cmd->redirs)
-    {
-        shell->exit_status = exec_builtin(shell, cmd);
-        return (shell->exit_status);
-    }
+        return (exec_builtin(shell, cmd));
     pid = fork();
     if (pid == 0)
-    {
-        set_signal_child();
-        if (check_redirections(cmd) == -1)
-            exit(1);
-        if (is_builtin(cmd))
-            exit(exec_builtin(shell, cmd));
-        else
-            exit(exec_external(shell, cmd));
-    }
+        exec_child(shell, cmd);
     else if (pid > 0)
-    {
-        waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
-            shell->exit_status = WEXITSTATUS(status);
-        else if (WIFSIGNALED(status))
-            shell->exit_status = 128 + WTERMSIG(status);
-        return (shell->exit_status);
-    }
-    perror("fork");
-    return (1);
+        return wait_and_update_exit_status(pid, shell);
+    perror("minishell");
+    shell->exit_status = errno;
+    return (shell->exit_status);
 }
+
 

@@ -5,7 +5,7 @@ int executor(t_shell *shell, t_cmd *cmd_list)
 	int status = 0;
 
 	if (cmd_list && cmd_list->pipe_out)
-        status = execute_pipeline(shell, cmd_list);
+		status = execute_pipeline(shell, cmd_list);
 	else
 	{
 		while (cmd_list)

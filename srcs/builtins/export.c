@@ -34,28 +34,6 @@ void	print_exported_env(t_env *env_list)
 	}
 }
 
-void	add_env(t_env **env_list, char *key, char *value)
-{
-	t_env	*new;
-	t_env	*tmp;
-
-	new = malloc(sizeof(t_env));
-	if (!new)
-		return ;
-	new->key = ft_strdup(key);
-	new->value = value ? ft_strdup(value) : NULL;
-	new->next = NULL;
-	if (!*env_list)
-	{
-		*env_list = new;
-		return ;
-	}
-	tmp = *env_list;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
-
 int is_valid_identifier(char *key)
 {
     int i;
@@ -63,6 +41,8 @@ int is_valid_identifier(char *key)
     i = 0;
     if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
         return (0);
+    if(ft_strchr(key , '='))
+        return(0);
     while (key[i])
     {
         if (!ft_isalnum(key[i]) && key[i] != '_')
