@@ -1,82 +1,69 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/22 10:06:48 by abjellal          #+#    #+#             */
+/*   Updated: 2025/07/09 10:06:48 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static int	handle_quote_token(char **input, t_token **list, t_shell *shell)
+static char	*str_append_and_free(char *original, char *addition)
 {
-    char	*value;
-    char	*full_value;
-    char	*temp;
-    char	quote_str[2];
+	char	*new_str;
 
-    quote_str[0] = **input; // Save the quote type (' or ")
-    quote_str[1] = '\0';
-    value = extract_quoted_string(input, shell);
-    if (!value)
-        return (0);
-    temp = ft_strjoin(quote_str, value);
-    if (!temp)
-    {
-        free(value);
-        return (0);
-    }
-    full_value = ft_strjoin(temp, quote_str);
-    free(temp);
-    if (!full_value)
-    {
-        free(value);
-        return (0);
-    }
-    add_token(list, full_value, TOKEN_WORD);
-    free(value);
-    return (1);
+	if (!original)
+		return (addition);
+	if (!addition)
+		return (original);
+	new_str = ft_strjoin(original, addition);
+	free(original);
+	free(addition);
+	return (new_str);
 }
 
-static int	handle_operator_token(char **input, t_token **list)
+static void	handle_word_concatenation(char **input, t_token **list, t_shell *shell)
 {
-	char	*op;
+	char	*current_word;
+	char	*extracted_part;
 
-	op = extract_operator(input);
-	if (op)
+	current_word = NULL;
+	while (**input && !is_white_space(**input) && !is_operator(**input))
 	{
-		add_token(list, op, get_operator_type(op));
-		return (1);
+		if (is_quote(**input))
+		{
+			extracted_part = extract_quoted_string(input, shell);
+			current_word = str_append_and_free(current_word, extracted_part);
+		}
+		else
+		{
+			extracted_part = extract_word(input);
+			current_word = str_append_and_free(current_word, extracted_part);
+		}
 	}
-	op = ft_strndup(*input, 1);
-	add_token(list, op, TOKEN_ERROR);
-	(*input)++;
-	return (1);
-}
-
-static int	handle_word_token(char **input, t_token **list)
-{
-	char	*word;
-
-	word = extract_word(input);
-	add_token(list, word, TOKEN_WORD);
-	return (1);
+	if (current_word)
+		add_token(list, current_word, TOKEN_WORD);
 }
 
 t_token	*lexer(char *input, t_shell *shell)
 {
 	t_token	*list;
-	int		success;
 
 	list = NULL;
-	success = 1;
-	while (*input && success)
+	while (input && *input)
 	{
 		if (is_white_space(*input))
 			skip_white_spaces(&input);
-		else if (is_quote(*input))
-			success = handle_quote_token(&input, &list, shell);
 		else if (is_operator(*input))
-			success = handle_operator_token(&input, &list);
+			handle_operator_token(&input, &list);
 		else
-			success = handle_word_token(&input, &list);
-	}
-	if (!success)
-	{
-		free_tokens(list);
-		return (NULL);
+		{
+			handle_word_concatenation(&input, &list, shell);
+		}
 	}
 	return (list);
 }

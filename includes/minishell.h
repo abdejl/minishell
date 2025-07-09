@@ -101,6 +101,7 @@ char	*extract_quoted_string(char **input, t_shell *shell);
 t_token	*handle_quoted_string(char **input, t_token *tokens);
 t_token	*handle_operator(char **input, t_token *tokens);
 t_token	*handle_word(char **input, t_token *tokens);
+int     handle_operator_token(char **input, t_token **list);
 int     is_operator(char c);
 char    *extract_word(char **str);
 char    *extract_operator(char **str);

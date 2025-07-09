@@ -19,7 +19,7 @@ int ft_echo(t_cmd *cmd)
 {
     int i = 1;
     int flag = 0;
-    //int first_arg = 1;
+    int first_arg = 1;
 
     if (!cmd || !cmd->args)
         return (1);
@@ -30,14 +30,13 @@ int ft_echo(t_cmd *cmd)
     }
     while (cmd->args[i])
     {
-        // if (!first_arg)
-        //     write(STDOUT_FILENO, " ", 1);
+        if (!first_arg)
+            write(STDOUT_FILENO, " ", 1);
         write(STDOUT_FILENO, cmd->args[i], ft_strlen(cmd->args[i]));
-        //first_arg = 0;
+        first_arg = 0;
         i++;
     }
     if (flag == 0)
         write(STDOUT_FILENO, "\n", 1);
-    fflush(stdout);
     return (0);
 }

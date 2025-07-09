@@ -123,7 +123,7 @@ int exec_external(t_shell *shell, t_cmd *cmd)
 	execve(path, cmd->args, envp);
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(cmd->args[0], STDERR_FILENO);
-	ft_putendl_fd(": execution failed", STDERR_FILENO);
+	ft_putendl_fd("command not found", STDERR_FILENO);
 	free(path);
 	free_str_array(envp);
 	exit(126);

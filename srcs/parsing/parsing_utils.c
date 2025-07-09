@@ -1,19 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_utils.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/24 10:07:17 by abjellal          #+#    #+#             */
+/*   Updated: 2025/07/09 10:07:17 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// t_token	*handle_quoted_string(char **input, t_token *tokens)
-// {
-// 	char	*quoted;
-
-// 	quoted = extract_quoted_string(input);
-// 	if (!quoted)
-// 	{
-// 		free_tokens(tokens);
-// 		return (NULL);
-// 	}
-// 	add_token(&tokens, quoted, TOKEN_WORD);
-// 	free(quoted);
-// 	return (tokens);
-// }
 t_token *handle_operator(char **input, t_token *tokens)
 {
     char *op = NULL;

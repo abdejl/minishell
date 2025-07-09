@@ -7,7 +7,8 @@ int handle_input_redirect(t_redirect *redir)
 	fd = open(redir->file, O_RDONLY);
 	if(fd < 0)
 	{
-			ft_putstr_fd("no such file or directory\n", STDERR_FILENO);
+        ft_putstr_fd(redir->file, STDERR_FILENO);
+			ft_putstr_fd(": no such file or directory\n", STDERR_FILENO);
 			return(-1);
 	}
 	dup2(fd , STDIN_FILENO);

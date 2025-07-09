@@ -1,4 +1,14 @@
-// In srcs/parsing/parser.c
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/20 10:07:05 by abjellal          #+#    #+#             */
+/*   Updated: 2025/07/09 10:07:05 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -63,6 +73,8 @@ t_cmd	*parser(t_token *tokens, t_shell *shell)
         {
             if (expect_cmd)
                 return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
+            // if (tokens->type == TOKEN_PIPE)
+            //     current_cmd->pipe_out = 1;
             current_cmd->background = (tokens->type == TOKEN_AMPERSAND);
             cmd_add_back(&cmd_list, current_cmd);
             current_cmd = new_command();
