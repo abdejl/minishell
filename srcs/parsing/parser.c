@@ -26,7 +26,7 @@ static int	handle_word_or_redir(t_token **tok, t_cmd *cmd)
 
     type = (*tok)->type;
     if (type == TOKEN_WORD)
-        add_arg(cmd, ft_strdup((*tok)->value));
+        add_arg(cmd, (*tok)->value);
     else
     {
         if (!(*tok)->next || (*tok)->next->type != TOKEN_WORD)
@@ -34,7 +34,7 @@ static int	handle_word_or_redir(t_token **tok, t_cmd *cmd)
             print_syntax_error((*tok)->next ? (*tok)->next->value : "newline");
             return (0);
         }
-        add_redirect(cmd, type, ft_strdup((*tok)->next->value));
+        add_redirect(cmd, type, (*tok)->next->value);
         *tok = (*tok)->next;
     }
     return (1);
@@ -68,10 +68,12 @@ t_cmd	*parser(t_token *tokens, t_shell *shell)
     while (tokens)
     {
         if (tokens->type == TOKEN_ERROR)
+            free_cmds(cmd_list);
             return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
         if (is_separator(tokens))
         {
             if (expect_cmd)
+                free_cmds(cmd_list);
                 return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
             // if (tokens->type == TOKEN_PIPE)
             //     current_cmd->pipe_out = 1;

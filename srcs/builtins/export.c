@@ -97,7 +97,8 @@ int ft_export(t_shell *shell, t_cmd *cmd)
         else
             add_env(&shell->env_list, key, value);
         free(key);
-        if (value) free(value);
+        if (value)
+            free(value);
         i++;
     }
     return (0);

@@ -175,6 +175,7 @@ void    ft_free_env_list(t_env *env);
 char    *ft_strndup(const char *s, size_t n);
 char    *strjoin_free(char *s1, char *s2);
 char    **env_to_array(t_env *env_list);
+void	free_str_list(t_str_list *list);
 
 /* ---------- Signals ---------- */
 

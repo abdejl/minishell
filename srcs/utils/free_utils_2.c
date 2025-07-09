@@ -30,3 +30,18 @@ void	ft_free_env_list(t_env *env)
 		env = tmp;
 	}
 }
+
+// In srcs/free_utils.c
+
+void	free_str_list(t_str_list *list)
+{
+	t_str_list	*tmp;
+
+	while (list)
+	{
+		tmp = list->next;
+		free(list->str);
+		free(list);
+		list = tmp;
+	}
+}

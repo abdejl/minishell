@@ -70,7 +70,7 @@ char	*expand_and_join(char *arg, t_shell *shell)
 		append_str_node(st.list, \
 			ft_substr(st.segment_start, 0, st.p - st.segment_start));
 	result = join_str_list(*st.list);
-	// free_str_list(*st.list);
+	free_str_list(*st.list);
 	free(st.list);
 	return (result);
 }
