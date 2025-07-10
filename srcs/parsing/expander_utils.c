@@ -57,7 +57,7 @@ char	*join_str_list(t_str_list *list)
 		ft_strlcat(result, current->str, total_len + 1);
 		current = current->next;
 	}
-	// free_str_list(list);
+	free_str_list(list);
 	return (result);
 }
 
