@@ -23,8 +23,7 @@ static void	close_pipe_ends(int pipe_fd[2], t_cmd *cmd, int in_fd)
 		close(in_fd);
 }
 
-static int	fork_and_execute(t_shell *shell, t_cmd *cmd, pid_t *pids,
-		int *in_fd)
+static int	fork_and_execute(t_shell *shell, t_cmd *cmd, pid_t *pids, int *in_fd)
 {
 	int	pipe_fd[2];
 	int	i;
@@ -34,9 +33,9 @@ static int	fork_and_execute(t_shell *shell, t_cmd *cmd, pid_t *pids,
 	{
 		if (cmd->next)
 		{
-			create_pipe(pipe_fd);
-			she
-
+			if(create_pipe(pipe_fd)== 1);
+			shell->exit_status = 1;
+			return(1);
 		}
 		pids[i] = fork_process();
 		if (pids[i] == 0)

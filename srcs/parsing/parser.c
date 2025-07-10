@@ -68,12 +68,10 @@ t_cmd	*parser(t_token *tokens, t_shell *shell)
     while (tokens)
     {
         if (tokens->type == TOKEN_ERROR)
-            free_cmds(cmd_list);
             return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
         if (is_separator(tokens))
         {
             if (expect_cmd)
-                free_cmds(cmd_list);
                 return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
             // if (tokens->type == TOKEN_PIPE)
             //     current_cmd->pipe_out = 1;

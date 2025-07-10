@@ -6,4 +6,10 @@ Args: [echo] ["ksdjhfkjdhf"] [jksdfjkh] [""]
 
 ila makanch espace wla pipe makhasch command tsplita
 
+<<<<<<< HEAD
 test 
+=======
+
+
+
+waaakhaaaa brahiiim
