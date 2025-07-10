@@ -142,7 +142,7 @@ int     ft_echo(t_cmd *cmd);
 int     cd_builtin(t_shell *shell, t_cmd *cmd);
 int     ft_env(t_env *env);
 int     ft_export(t_shell *shell, t_cmd *cmd);
-void    ft_unset(t_env **env_list, char *key);
+int    ft_unset(t_shell *shell, t_cmd *cmd);
 int     mini_exit(t_shell *shell, t_cmd *cmd);
 void    ft_putstr_fd(char *s, int fd);
 int     ft_pwd(void);

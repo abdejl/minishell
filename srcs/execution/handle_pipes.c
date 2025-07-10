@@ -33,7 +33,7 @@ static int	fork_and_execute(t_shell *shell, t_cmd *cmd, pid_t *pids, int *in_fd)
 	{
 		if (cmd->next)
 		{
-			if(create_pipe(pipe_fd)== 1);
+			if(create_pipe(pipe_fd)== 1)
 			shell->exit_status = 1;
 			return(1);
 		}
