@@ -47,24 +47,7 @@ int exec_builtin(t_shell *shell, t_cmd *cmd)
     else if (!ft_strcmp(cmd->args[0], "export"))
         return (ft_export(shell, cmd));
     else if (!ft_strcmp(cmd->args[0], "unset"))
-    {
-          int i = 1;
-          int has_error = 0;
-
-          while (cmd->args[i])
-          {
-            if (!is_valid_identifier(cmd->args[i]))
-            {
-                is_valid_identifier(cmd->args[i]);
-                has_error = 1;
-            }
-            else
-                ft_unset(&shell->env_list, cmd->args[i]);
-            i++;
-          }
-          shell->exit_status = has_error;
-          return (0);
-    }
+        return (ft_unset(shell, cmd));
     else if (!ft_strcmp(cmd->args[0], "env"))
         return (ft_env(shell->env_list));
     else if (!ft_strcmp(cmd->args[0], "exit"))
@@ -75,17 +58,16 @@ int exec_builtin(t_shell *shell, t_cmd *cmd)
 char *get_cmd_path(char *cmd_name, t_env *env_list)
 {
     char **paths;
-    char *path_var = get_env_value(env_list, "PATH");
+    char *path_var;
     char *full_path;
     int i = -1;
     
+    path_var = get_env_value(env_list, "PATH");
     if (!path_var)
         return (NULL);
-    
     paths = ft_split(path_var, ':');
     if (!paths)
         return (NULL);
-    
     while (paths[++i])
     {
         full_path = ft_strjoin(paths[i], "/");

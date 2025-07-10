@@ -32,8 +32,17 @@ static int	fork_and_execute(t_shell *shell, t_cmd *cmd, pid_t *pids,
 	i = 0;
 	while (cmd)
 	{
+<<<<<<< HEAD
 		if (cmd->pipe_out)
 			create_pipe(pipe_fd);
+=======
+		if (cmd->next)
+		{
+			if(create_pipe(pipe_fd)== 1)
+			shell->exit_status = 1;
+			return(1);
+		}
+>>>>>>> 17f3197c24950f3272edccff81804e5422b5a3e8
 		pids[i] = fork_process();
 		if (pids[i] == 0)
 			setup_child_process(shell, cmd, pipe_fd, *in_fd);
