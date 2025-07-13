@@ -7,7 +7,7 @@ int executor(t_shell *shell, t_cmd *cmd_list)
 	t_cmd	*runner;
 	t_cmd	*next_segment_head;
 
-	if (process_heredocs(cmd_list) == -1)
+	if (process_heredocs(cmd_list, shell) == -1)
 		return (1);
 	status = 0;
 	segment_head = cmd_list;

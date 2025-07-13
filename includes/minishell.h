@@ -136,7 +136,8 @@ int     exec_external(t_shell *shell, t_cmd *cmd);
 int     execute_pipeline(t_shell *shell, t_cmd *cmd);
 int     check_redirections(t_cmd *cmd);
 int     handle_heredoc(t_redirect *redir);
-int	process_heredocs(t_cmd *cmd_list);
+int	    process_heredocs(t_cmd *cmd_list, t_shell *shell);
+char	*expand_heredoc_line(char *line, t_shell *shell);
 
 /* ---------- Builtins ---------- */
 

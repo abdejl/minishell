@@ -1,9 +1,10 @@
 #include "minishell.h"
 
-static int	read_heredoc_input(t_redirect *redir)
+static int	read_heredoc_input(t_redirect *redir, t_shell *shell)
 {
 	int		fd[2];
 	char	*line;
+	char	*expanded_line;
 
 	if (pipe(fd) == -1)
 		return (-1);
@@ -16,14 +17,17 @@ static int	read_heredoc_input(t_redirect *redir)
 				free(line);
 			break ;
 		}
-		ft_putendl_fd(line, fd[1]);
+		// FIX: Call the new, dedicated heredoc expander
+		expanded_line = expand_heredoc_line(line, shell);
+		ft_putendl_fd(expanded_line, fd[1]);
 		free(line);
+		free(expanded_line);
 	}
 	close(fd[1]);
 	return (fd[0]);
 }
 
-int	process_heredocs(t_cmd *cmd_list)
+int	process_heredocs(t_cmd *cmd_list, t_shell *shell)
 {
 	t_redirect	*redir;
 
@@ -34,7 +38,7 @@ int	process_heredocs(t_cmd *cmd_list)
 		{
 			if (redir->type == TOKEN_HEREDOC)
 			{
-				redir->heredoc_fd = read_heredoc_input(redir);
+				redir->heredoc_fd = read_heredoc_input(redir, shell);
 				if (redir->heredoc_fd < 0)
 					return (-1);
 			}

@@ -66,11 +66,41 @@ char	*expand_and_join(char *arg, t_shell *shell)
 		}
 		st.p++;
 	}
+//...
 	if (st.p > st.segment_start)
 		append_str_node(st.list, \
 			ft_substr(st.segment_start, 0, st.p - st.segment_start));
 	result = join_str_list(*st.list);
 	free_str_list(*st.list);
 	free(st.list);
+	return (result);
+}
+
+char	*expand_heredoc_line(char *line, t_shell *shell)
+{
+	t_str_list	*list_head;
+	char		*p;
+	char		*segment_start;
+	char		*result;
+
+	list_head = NULL;
+	p = line;
+	segment_start = line;
+	while (*p)
+	{
+		if (*p == '$' && is_expandable(*(p + 1)))
+		{
+			if (p > segment_start)
+				append_str_node(&list_head, ft_substr(segment_start, 0, p - segment_start));
+			append_str_node(&list_head, get_var_value(&p, shell));
+			segment_start = p;
+			continue ;
+		}
+		p++;
+	}
+	if (p > segment_start)
+		append_str_node(&list_head, ft_substr(segment_start, 0, p - segment_start));
+	result = join_str_list(list_head);
+	free_str_list(list_head); // Free the temporary list
 	return (result);
 }
