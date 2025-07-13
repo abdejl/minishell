@@ -73,8 +73,8 @@ t_cmd	*parser(t_token *tokens, t_shell *shell)
         {
             if (expect_cmd)
                 return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
-            // if (tokens->type == TOKEN_PIPE)
-            //     current_cmd->pipe_out = 1;
+            if (tokens->type == TOKEN_PIPE)
+                current_cmd->pipe_out = 1;
             current_cmd->background = (tokens->type == TOKEN_AMPERSAND);
             cmd_add_back(&cmd_list, current_cmd);
             current_cmd = new_command();

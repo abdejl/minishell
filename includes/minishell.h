@@ -48,6 +48,7 @@ typedef struct s_token {
 typedef struct s_redirect {
     char    *file;
     int     type;
+    int     heredoc_fd;
     struct s_redirect *next; 
 } t_redirect;
 
@@ -135,6 +136,7 @@ int     exec_external(t_shell *shell, t_cmd *cmd);
 int     execute_pipeline(t_shell *shell, t_cmd *cmd);
 int     check_redirections(t_cmd *cmd);
 int     handle_heredoc(t_redirect *redir);
+int	process_heredocs(t_cmd *cmd_list);
 
 /* ---------- Builtins ---------- */
 

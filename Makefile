@@ -1,11 +1,11 @@
 NAME = minishell
 
-# Paths
+
 INCLUDES = includes/
 LIBFT_PATH = libft/
 GNL_PATH = gnl/
 
-# Sources
+
 SRCS = srcs/main.c \
        srcs/builtins/cd.c \
        srcs/builtins/echo.c \
@@ -36,15 +36,15 @@ SRCS = srcs/main.c \
        srcs/utils/free_utils.c \
        srcs/utils/free_utils_2.c
 
-# Compiler settings
+
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
-# Add these to your Makefile
+
 READLINE_INC = -I/usr/include -I/usr/local/opt/readline/include
 READLINE_LIB = -L/usr/lib -L/usr/local/opt/readline/lib -lreadline
 READLINE_FLAGS = -lreadline -L/usr/local/opt/readline/lib -I/usr/local/opt/readline/include
 
-# Colors
+
 GREEN = \033[0;32m
 RED = \033[0;31m
 RESET = \033[0m

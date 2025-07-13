@@ -1,5 +1,50 @@
 #include "minishell.h"
 
+static int	read_heredoc_input(t_redirect *redir)
+{
+	int		fd[2];
+	char	*line;
+
+	if (pipe(fd) == -1)
+		return (-1);
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, redir->file) == 0)
+		{
+			if (line)
+				free(line);
+			break ;
+		}
+		ft_putendl_fd(line, fd[1]);
+		free(line);
+	}
+	close(fd[1]);
+	return (fd[0]);
+}
+
+int	process_heredocs(t_cmd *cmd_list)
+{
+	t_redirect	*redir;
+
+	while (cmd_list)
+	{
+		redir = cmd_list->redirs;
+		while (redir)
+		{
+			if (redir->type == TOKEN_HEREDOC)
+			{
+				redir->heredoc_fd = read_heredoc_input(redir);
+				if (redir->heredoc_fd < 0)
+					return (-1);
+			}
+			redir = redir->next;
+		}
+		cmd_list = cmd_list->next;
+	}
+	return (0);
+}
+
 int handle_input_redirect(t_redirect *redir)
 {
 	int fd;
@@ -71,33 +116,32 @@ int handle_heredoc(t_redirect *redir)
 
 int check_redirections(t_cmd *cmd)
 {
-    t_redirect *redir = cmd->redirs;
-    
-    if(!cmd || !cmd->redirs)
-        return(1);
-    while(redir)
-    {
-        if(redir->type == TOKEN_REDIR_IN)
-        {
-            if(handle_input_redirect(redir) == -1)
-                return(-1);
-        }
-        else if (redir->type == TOKEN_REDIR_OUT)
-        {
-            if(handle_output_redirect(redir) == -1)
-                return(-1);
-        }
-        else if (redir->type == TOKEN_APPEND)
-        {
-            if(handle_append_redirect(redir) == -1)
-                return(-1);
-        }
-        else if (redir->type == TOKEN_HEREDOC)
-        {
-            if(handle_heredoc(redir) == -1)
-                return(-1);
-        }
-        redir = redir->next;
-    }
-    return(0);
+	t_redirect	*redir;
+
+	redir = cmd->redirs;
+	while (redir)
+	{
+		if (redir->type == TOKEN_REDIR_IN)
+		{
+			if (handle_input_redirect(redir) == -1)
+				return (-1);
+		}
+		else if (redir->type == TOKEN_REDIR_OUT)
+		{
+			if (handle_output_redirect(redir) == -1)
+				return (-1);
+		}
+		else if (redir->type == TOKEN_APPEND)
+		{
+			if (handle_append_redirect(redir) == -1)
+				return (-1);
+		}
+		else if (redir->type == TOKEN_HEREDOC)
+		{
+			dup2(redir->heredoc_fd, STDIN_FILENO);
+			close(redir->heredoc_fd);
+		}
+		redir = redir->next;
+	}
+	return (0);
 }
