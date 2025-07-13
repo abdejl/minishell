@@ -20,7 +20,9 @@ static int	is_separator(t_token *token)
         || token->type == TOKEN_AMPERSAND);
 }
 
-static int	handle_word_or_redir(t_token **tok, t_cmd *cmd)waaakhaaaa brahiiim
+static int	handle_word_or_redir(t_token **tok, t_cmd *cmd)
+{
+    t_token_type	type;
 
     type = (*tok)->type;
     if (type == TOKEN_WORD)
@@ -71,8 +73,8 @@ t_cmd	*parser(t_token *tokens, t_shell *shell)
         {
             if (expect_cmd)
                 return (print_syntax_error(tokens->value), free_cmd(current_cmd), NULL);
-            if (tokens->type == TOKEN_PIPE)
-                current_cmd->pipe_out = 1;
+            // if (tokens->type == TOKEN_PIPE)
+            //     current_cmd->pipe_out = 1;
             current_cmd->background = (tokens->type == TOKEN_AMPERSAND);
             cmd_add_back(&cmd_list, current_cmd);
             current_cmd = new_command();

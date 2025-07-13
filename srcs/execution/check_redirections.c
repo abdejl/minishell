@@ -1,56 +1,5 @@
 #include "minishell.h"
 
-// In srcs/check_redirections.c
-
-// This is the new function that reads a SINGLE heredoc and returns the fd.
-static int	read_heredoc_input(t_redirect *redir)
-{
-	int		fd[2];
-	char	*line;
-
-	if (pipe(fd) == -1)
-		return (-1);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line || ft_strcmp(line, redir->file) == 0)
-		{
-			if (line)
-				free(line);
-			break ;
-		}
-		ft_putendl_fd(line, fd[1]);
-		free(line);
-	}
-	close(fd[1]);
-	return (fd[0]);
-}
-
-// This is the main pre-processing function to call from your executor.
-int	process_heredocs(t_cmd *cmd_list)
-{
-	t_redirect	*redir;
-
-	while (cmd_list)
-	{
-		redir = cmd_list->redirs;
-		while (redir)
-		{
-			if (redir->type == TOKEN_HEREDOC)
-			{
-				// Read the heredoc and store the read-end of the pipe
-				redir->heredoc_fd = read_heredoc_input(redir);
-				if (redir->heredoc_fd < 0)
-					return (-1); // Error
-			}
-			redir = redir->next;
-		}
-		cmd_list = cmd_list->next;
-	}
-	return (0);
-}
-
-
 int handle_input_redirect(t_redirect *redir)
 {
 	int fd;
@@ -97,62 +46,58 @@ int handle_append_redirect(t_redirect *redir)
 	return(0);
 }
 
-// int handle_heredoc(t_redirect *redir)
-// {
-//     int fd[2];
-//     char *line;
+int handle_heredoc(t_redirect *redir)
+{
+    int fd[2];
+    char *line;
     
-//     if (pipe(fd) == -1)
-//         return (-1);
-//     while (1)
-//     {
-//         line = readline("> ");
-//         if (!line || ft_strcmp(line, redir->file) == 0)
-//         {
-//             free(line);
-//             break;
-//         }
-//         write(fd[1], line, ft_strlen(line));
-//         write(fd[1], "\n", 1);
-//         free(line);
-//     }
-//     close(fd[1]);
-//     dup2(fd[0], STDIN_FILENO);
-//     close(fd[0]);
-//     return (0);
-// }
-
-// In srcs/check_redirections.c
+    if (pipe(fd) == -1)
+        return (-1);
+    while (1)
+    {
+        line = readline("> ");
+        if (!line || ft_strcmp(line, redir->file) == 0)
+        {
+            free(line);
+            break;
+        }
+        write(fd[1], line, ft_strlen(line));
+        write(fd[1], "\n", 1);
+        free(line);
+    }
+    close(fd[1]);
+    return (fd[0]);
+}
 
 int check_redirections(t_cmd *cmd)
 {
-	t_redirect	*redir;
-
-	redir = cmd->redirs;
-	while (redir)
-	{
-		if (redir->type == TOKEN_REDIR_IN)
-		{
-			if (handle_input_redirect(redir) == -1)
-				return (-1);
-		}
-		else if (redir->type == TOKEN_REDIR_OUT)
-		{
-			if (handle_output_redirect(redir) == -1)
-				return (-1);
-		}
-		else if (redir->type == TOKEN_APPEND)
-		{
-			if (handle_append_redirect(redir) == -1)
-				return (-1);
-		}
-		else if (redir->type == TOKEN_HEREDOC)
-		{
-			// New logic: just dup the fd we already created
-			dup2(redir->heredoc_fd, STDIN_FILENO);
-			close(redir->heredoc_fd);
-		}
-		redir = redir->next;
-	}
-	return (0);
+    t_redirect *redir = cmd->redirs;
+    
+    if(!cmd || !cmd->redirs)
+        return(1);
+    while(redir)
+    {
+        if(redir->type == TOKEN_REDIR_IN)
+        {
+            if(handle_input_redirect(redir) == -1)
+                return(-1);
+        }
+        else if (redir->type == TOKEN_REDIR_OUT)
+        {
+            if(handle_output_redirect(redir) == -1)
+                return(-1);
+        }
+        else if (redir->type == TOKEN_APPEND)
+        {
+            if(handle_append_redirect(redir) == -1)
+                return(-1);
+        }
+        else if (redir->type == TOKEN_HEREDOC)
+        {
+            if(handle_heredoc(redir) == -1)
+                return(-1);
+        }
+        redir = redir->next;
+    }
+    return(0);
 }

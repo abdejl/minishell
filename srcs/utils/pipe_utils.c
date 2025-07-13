@@ -27,17 +27,10 @@ void setup_child_process(t_shell *shell, t_cmd *cmd, int pipe_fd[2], int in_fd)
 
 int count_commands(t_cmd *cmd)
 {
-    int count;
-
-    count = 0;
-    while (cmd)
-    {
-        count++;
-        if (!cmd->pipe_out)
-            break;
+    int count = 0;
+    while (cmd && ++count)
         cmd = cmd->next;
-    }
-    return (count);
+    return count;
 }
 
 int create_pipe(int pipe_fd[2])
