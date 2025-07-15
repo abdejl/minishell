@@ -150,6 +150,13 @@ int     mini_exit(t_shell *shell, t_cmd *cmd);
 void    ft_putstr_fd(char *s, int fd);
 int     ft_pwd(void);
 
+/*-------export utils------*/
+
+void	    split_key_value(char *arg, char **key, char **value);
+void	    print_exported_env(t_env *env_list);
+int     is_valid_identifier(char *key);
+int     handle_invalid_key(char *key, t_shell *shell);
+
 /*--------Expander---------*/
 
 int     is_expandable(char c);

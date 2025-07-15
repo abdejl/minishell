@@ -16,10 +16,18 @@ char **env_to_array(t_env *env_list)
     tmp = env_list;
     while (tmp)
     {
-        temp = ft_strjoin(tmp->key, "=");
-        envp[i] = ft_strjoin(temp, tmp->value);
-        free(temp);
-        if (!envp[i]) {
+        if(tmp->value)
+        {
+            temp = ft_strjoin(tmp->key, "=");
+            envp[i] = ft_strjoin(temp, tmp->value);
+            free(temp);
+        }
+        else
+        {
+            envp[i]= ft_strdup(tmp->key);
+        }
+        if (!envp[i])
+        {
             while (i-- > 0)
                 free(envp[i]);
             free(envp);
