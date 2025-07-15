@@ -1,20 +1,5 @@
 #include "minishell.h"
 
-// static void	exec_child(t_shell *shell, t_cmd *cmd, int in_fd, int out_fd)
-// {
-// 	setup_child_fds(in_fd, out_fd);
-// 	if (check_redirections(cmd) == -1)
-// 		exit(EXIT_FAILURE);
-// 	if (cmd->args && cmd->args[0])
-// 	{
-// 		if (is_builtin(cmd))
-// 			exit(exec_builtin(shell, cmd));
-// 		else
-// 			exit(exec_external(shell, cmd));
-// 	}
-// 	exit(EXIT_SUCCESS);
-// }
-
 static void	close_pipe_ends(int pipe_fd[2], t_cmd *cmd, int in_fd)
 {
 	if (cmd->next)

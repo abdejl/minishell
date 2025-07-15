@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 13:18:51 by brbaazi           #+#    #+#             */
+/*   Updated: 2025/07/15 13:31:17 by brbaazi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	free_env_node(t_env *node)
@@ -14,6 +26,7 @@ static void	print_invalid_identifier(char *key)
 	ft_putstr_fd(key, STDERR_FILENO);
 	ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 }
+
 static void	remove_env_var(t_shell *shell, char *key)
 {
 	t_env	*tmp;
@@ -36,6 +49,7 @@ static void	remove_env_var(t_shell *shell, char *key)
 		tmp = tmp->next;
 	}
 }
+
 int	ft_unset(t_shell *shell, t_cmd *cmd)
 {
 	int	i;

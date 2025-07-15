@@ -1,18 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/15 13:18:05 by brbaazi           #+#    #+#             */
+/*   Updated: 2025/07/15 13:18:05 by brbaazi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int ft_strcmp(const char *s1, const char *s2)
+int	ft_strcmp(const char *s1, const char *s2)
 {
 	while (*s1 && *s1 == *s2)
 		s1++, s2++;
-	return (unsigned char)*s1 - (unsigned char)*s2;
+	return ((unsigned char)*s1 - (unsigned char)*s2);
 }
 
 char	*get_cd_path(t_shell *shell, t_cmd *cmd)
 {
 	char	*path;
 
-	if (!cmd->args[1] || (ft_strcmp(cmd->args[1], "--" ) == 0)||
-	(ft_strcmp(cmd->args[1], "~" ) == 0))
+	if (!cmd->args[1] || (ft_strcmp(cmd->args[1], "--") == 0)
+		|| (ft_strcmp(cmd->args[1], "~") == 0))
 	{
 		path = get_env_value(shell->env_list, "HOME");
 		if (!path)
@@ -69,8 +81,8 @@ int	cd_builtin(t_shell *shell, t_cmd *cmd)
 		return (1);
 	if (chdir(path) != 0)
 		return (handle_chdir_error(path, shell, oldpwd));
-	if (!get_env_value(shell->env_list , "OLDPWD"))
-		add_env(&shell->env_list , "OLDPWD", oldpwd);
+	if (!get_env_value(shell->env_list, "OLDPWD"))
+		add_env(&shell->env_list, "OLDPWD", oldpwd);
 	else
 		set_env_value(shell->env_list, "OLDPWD", oldpwd);
 	free(oldpwd);
@@ -79,4 +91,3 @@ int	cd_builtin(t_shell *shell, t_cmd *cmd)
 	shell->exit_status = 0;
 	return (0);
 }
-
