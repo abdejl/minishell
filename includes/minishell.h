@@ -171,6 +171,7 @@ char	*expand_and_join(char *arg, t_shell *shell);
 t_env   *init_env_list(char **envp);
 char    *get_env_value(t_env *env, char *key);
 int     set_env_value(t_env *env, char *key, char *value);
+int	    save_oldpwd(char *cwd, char **oldpwd);
 void    add_env(t_env **env_list, char *key, char *value);
 int     is_valid_identifier(char *key);
 t_env *get_env_node(t_env *env_list, char *key);

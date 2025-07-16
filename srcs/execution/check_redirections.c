@@ -17,7 +17,6 @@ static int	read_heredoc_input(t_redirect *redir, t_shell *shell)
 				free(line);
 			break ;
 		}
-		// FIX: Call the new, dedicated heredoc expander
 		expanded_line = expand_heredoc_line(line, shell);
 		ft_putendl_fd(expanded_line, fd[1]);
 		free(line);

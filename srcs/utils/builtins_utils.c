@@ -1,5 +1,15 @@
 
 #include "minishell.h"
+static void	split_key_value_no_equal(char *arg, char **key, char **value)
+{
+	*key = ft_strdup(arg);
+	if (!*key)
+	{
+		*value = NULL;
+		return;
+	}
+	*value = NULL;
+}
 
 void	split_key_value(char *arg, char **key, char **value)
 {
@@ -9,12 +19,21 @@ void	split_key_value(char *arg, char **key, char **value)
 	if (equal)
 	{
 		*key = ft_substr(arg, 0, equal - arg);
+		if(!*key)
+		{
+			*value = NULL;
+			return;
+		}
 		*value = ft_strdup(equal + 1);
+		if(!*value)
+		{
+			free(*key);
+			return;
+		}
 	}
 	else
 	{
-		*key = ft_strdup(arg);
-		*value = NULL;
+		split_key_value_no_equal(arg, key, value);
 	}
 }
 
@@ -58,7 +77,7 @@ int handle_invalid_key(char *key, t_shell *shell)
     ft_putstr_fd("minishell: export: `", STDERR);
     ft_putstr_fd(key, STDERR);
     ft_putendl_fd("': not a valid identifier", STDERR);
-    shell->exit_status = 1;
+   	shell->exit_status = 1;
     return (1);
 }
 

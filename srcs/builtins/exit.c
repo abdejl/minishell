@@ -6,7 +6,7 @@
 /*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:18:33 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/15 13:18:33 by brbaazi          ###   ########.fr       */
+/*   Updated: 2025/07/16 10:58:11 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static void	exit_with_error(char *arg)
 	ft_putstr_fd("minishell: exit: ", STDERR);
 	ft_putstr_fd(arg, STDERR);
 	ft_putendl_fd(": numeric argument required", STDERR);
-	exit(255);
+	exit(2);
 }
 
 static void	too_many_args_error(t_shell *shell)
@@ -62,9 +62,5 @@ int	mini_exit(t_shell *shell, t_cmd *cmd)
 		return (1);
 	}
 	code = ft_atoi(args[1]);
-	if (code > 255)
-		code %= 256;
-	else if (code < 0)
-		code = 256 + (code % 256);
 	exit((unsigned char)code);
 }

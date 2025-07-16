@@ -1,25 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strchr.c                                        :+:      :+:    :+:   */
+/*   builtins_fun.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/28 11:57:28 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/15 20:38:36 by brbaazi          ###   ########.fr       */
+/*   Created: 2025/07/16 09:21:16 by brbaazi           #+#    #+#             */
+/*   Updated: 2025/07/16 09:23:04 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_strchr(const char *s, int c)
+int	save_oldpwd(char *cwd, char **oldpwd)
 {
-	while ((char)c != *s)
-	{
-		if (!*s)
-			return (0);
-		s++;
-	}
-	return ((char *)s);
+	if (!getcwd(cwd, 1024))
+		return (1);
+	*oldpwd = ft_strdup(cwd);
+	if (!*oldpwd)
+		return (1);
+	return (0);
 }
-

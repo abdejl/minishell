@@ -20,7 +20,7 @@ int	is_expandable(char c)
 void	process_quote(t_expand_state *state)
 {
 	if (state->p > state->segment_start)
-		append_str_node(state->list, \
+		append_str_node(state->list,
 			ft_substr(state->segment_start, 0, state->p - state->segment_start));
 	if (*state->p == '\'')
 		state->in_s_quotes = !state->in_s_quotes;
@@ -32,7 +32,7 @@ void	process_quote(t_expand_state *state)
 void	process_dollar(t_expand_state *state)
 {
 	if (state->p > state->segment_start)
-		append_str_node(state->list, \
+		append_str_node(state->list,
 			ft_substr(state->segment_start, 0, state->p - state->segment_start));
 	append_str_node(state->list, get_var_value(&state->p, state->shell));
 	state->segment_start = state->p;

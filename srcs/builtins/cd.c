@@ -5,18 +5,26 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/15 13:18:05 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/15 13:18:05 by brbaazi          ###   ########.fr       */
+/*   Created: 2025/07/15 21:16:22 by brbaazi           #+#    #+#             */
+/*   Updated: 2025/07/16 09:24:07 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_strcmp(const char *s1, const char *s2)
+static char	*get_oldpwd_or_error(t_shell *shell)
 {
-	while (*s1 && *s1 == *s2)
-		s1++, s2++;
-	return ((unsigned char)*s1 - (unsigned char)*s2);
+	char	*path;
+
+	path = get_env_value(shell->env_list, "OLDPWD");
+	if (!path)
+	{
+		ft_putstr_fd("cd: OLDPWD not set\n", STDERR);
+		shell->exit_status = 1;
+		return (NULL);
+	}
+	ft_putendl_fd(path, STDOUT);
+	return (path);
 }
 
 char	*get_cd_path(t_shell *shell, t_cmd *cmd)
@@ -36,14 +44,9 @@ char	*get_cd_path(t_shell *shell, t_cmd *cmd)
 	}
 	else if (ft_strcmp(cmd->args[1], "-") == 0)
 	{
-		path = get_env_value(shell->env_list, "OLDPWD");
+		path = get_oldpwd_or_error(shell);
 		if (!path)
-		{
-			ft_putstr_fd("cd: OLDPWD not set\n", STDERR);
-			shell->exit_status = 1;
 			return (NULL);
-		}
-		ft_putendl_fd(path, STDOUT);
 	}
 	else
 		path = cmd->args[1];
@@ -61,6 +64,17 @@ static int	handle_chdir_error(char *path, t_shell *shell, char *oldpwd)
 	return (1);
 }
 
+static int	check_cd_args(t_cmd *cmd, t_shell *shell)
+{
+	if (cmd->args[1] && cmd->args[2])
+	{
+		ft_putendl_fd("cd: too many arguments", STDERR);
+		shell->exit_status = 1;
+		return (1);
+	}
+	return (0);
+}
+
 int	cd_builtin(t_shell *shell, t_cmd *cmd)
 {
 	char	cwd[1024];
@@ -68,14 +82,10 @@ int	cd_builtin(t_shell *shell, t_cmd *cmd)
 	char	*path;
 
 	oldpwd = NULL;
-	if (cmd->args[1] && cmd->args[2])
-	{
-		ft_putendl_fd("cd: too many arguments", STDERR);
-		shell->exit_status = 1;
+	if (check_cd_args(cmd, shell))
 		return (1);
-	}
-	if (getcwd(cwd, sizeof(cwd)))
-		oldpwd = ft_strdup(cwd);
+	if (save_oldpwd(cwd, &oldpwd))
+		return (1);
 	path = get_cd_path(shell, cmd);
 	if (!path)
 		return (1);

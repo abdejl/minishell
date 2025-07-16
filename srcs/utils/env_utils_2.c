@@ -22,6 +22,8 @@ int	set_env_value(t_env *env, char *key, char *value)
 		{
 			free(current->value);
 			current->value = ft_strdup(value);
+			if(!current->value)
+				return(1);
 			return (0);
 		}
 		current = current->next;
@@ -38,7 +40,11 @@ void	add_env(t_env **env_list, char *key, char *value)
 	if (!new)
 		return ;
 	new->key = ft_strdup(key);
+	if(!new->key)
+		return;
 	new->value = value ? ft_strdup(value) : NULL;
+	if(!new->value)
+		return;
 	new->next = NULL;
 	if (!*env_list)
 	{

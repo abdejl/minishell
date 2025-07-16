@@ -6,7 +6,7 @@
 /*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:17:50 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/15 13:17:50 by brbaazi          ###   ########.fr       */
+/*   Updated: 2025/07/16 10:46:46 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,11 @@ static int	print_and_return(t_env *env_list)
 
 static int	handle_invalid(t_shell *shell, char *key, char *value, char *arg)
 {
-	if (!handle_invalid_key(arg, shell))
-		return (1);
+	handle_invalid_key(arg, shell);
 	free(key);
 	if (value)
 		free(value);
-	return (0);
+	return (1);
 }
 
 static void	update_or_add(t_shell *shell, t_env *existing, char *key,
@@ -37,10 +36,13 @@ static void	update_or_add(t_shell *shell, t_env *existing, char *key,
 		{
 			free(existing->value);
 			existing->value = ft_strdup(value);
+			if(!existing->value)
+				return;
 		}
 	}
 	else
 		add_env(&shell->env_list, key, value);
+
 }
 
 static int	handle_argument(t_shell *shell, char *arg)
@@ -53,6 +55,8 @@ static int	handle_argument(t_shell *shell, char *arg)
 	if (!is_valid_identifier(key))
 		return (handle_invalid(shell, key, value, arg));
 	existing = get_env_node(shell->env_list, key);
+	if(!existing)
+		return(1);
 	update_or_add(shell, existing, key, value);
 	free(key);
 	if (value)
@@ -67,11 +71,12 @@ int	ft_export(t_shell *shell, t_cmd *cmd)
 	i = 1;
 	if (!cmd->args[1])
 		return (print_and_return(shell->env_list));
+	shell->exit_status= 0;
 	while (cmd->args[i])
 	{
 		if (handle_argument(shell, cmd->args[i]) == 1)
 			break ;
 		i++;
 	}
-	return (0);
+	return (shell->exit_status);
 }
