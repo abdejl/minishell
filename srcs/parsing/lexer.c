@@ -17,12 +17,12 @@ static char	*str_append_and_free(char *original, char *addition)
 	char	*new_str;
 
 	if (!original)
-		return (addition);
+		return (ft_strdup(addition));
 	if (!addition)
 		return (original);
 	new_str = ft_strjoin(original, addition);
-	free(original);
-	free(addition);
+	if (original)
+		free(original);
 	return (new_str);
 }
 
@@ -30,23 +30,35 @@ static void	handle_word_concatenation(char **input, t_token **list, t_shell *she
 {
 	char	*current_word;
 	char	*extracted_part;
+	char	*temp_input;
+	int		len;
 
-	current_word = NULL;
+	(void)shell;
+	current_word = ft_strdup("");
 	while (**input && !is_white_space(**input) && !is_operator(**input))
 	{
 		if (is_quote(**input))
 		{
-			extracted_part = extract_quoted_string(input, shell);
-			current_word = str_append_and_free(current_word, extracted_part);
+			temp_input = *input;
+			len = 0;
+			char quote_type = temp_input[len++];
+			while(temp_input[len] && temp_input[len] != quote_type)
+				len++;
+			if (temp_input[len] == quote_type)
+				len++;
+			extracted_part = ft_strndup(temp_input, len);
+			*input += len;
 		}
 		else
 		{
 			extracted_part = extract_word(input);
-			current_word = str_append_and_free(current_word, extracted_part);
 		}
+		current_word = str_append_and_free(current_word, extracted_part);
 	}
-	if (current_word)
+	if (current_word && *current_word)
 		add_token(list, current_word, TOKEN_WORD);
+	else
+		free(current_word);
 }
 
 t_token	*lexer(char *input, t_shell *shell)
@@ -66,13 +78,4 @@ t_token	*lexer(char *input, t_shell *shell)
 		}
 	}
 	return (list);
-}
-int	ft_strcmp(const char *s1, const char *s2)
-{
-	size_t	i;
-
-	i = 0;
-	while (s1[i] && s2[i] && s1[i] == s2[i])
-		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
 }

@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:05:27 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/13 11:27:16 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/17 11:35:14 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ int is_quote(char c)
     return (0);
 }
 
+
 char	*extract_quoted_string(char **input, t_shell *shell)
 {
     char	*start;
@@ -41,7 +42,10 @@ char	*extract_quoted_string(char **input, t_shell *shell)
     (*input)++;
     start = *input;
     while (**input && **input != quote_type)
+    {
         (*input)++;
+    }
+
     if (**input != quote_type)
     {
         print_syntax_error("unclosed quote");
