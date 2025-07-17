@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:30:15 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/17 11:42:38 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:59:25 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_cmd *new_command(void)
 {
-    t_cmd *cmd = malloc(sizeof(t_cmd));
+    t_cmd *cmd = gc_malloc(sizeof(t_cmd));
     if (!cmd)
         return (NULL);
     cmd->args = NULL;
@@ -30,7 +30,7 @@ int cmd_add_redirect(t_cmd *cmd, int type, char *file)
     
     if (!cmd || !file)
         return (0);
-    redir = malloc(sizeof(t_redirect));
+    redir = gc_malloc(sizeof(t_redirect));
     if (!redir)
         return (0);
     redir->type = type;

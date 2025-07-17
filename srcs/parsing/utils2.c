@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:30:31 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/13 11:27:11 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/17 21:07:47 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	add_token(t_token **token_list, char *value, t_token_type type)
 	t_token	*new_token;
 	t_token	*last;
 
-	new_token = malloc(sizeof(t_token));
+	new_token = gc_malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
 	new_token->value = value;

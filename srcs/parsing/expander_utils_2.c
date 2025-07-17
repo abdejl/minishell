@@ -40,7 +40,7 @@ void	process_dollar(t_expand_state *state)
 
 void	init_expand_state(t_expand_state *st, char *arg, t_shell *sh)
 {
-	st->list = malloc(sizeof(t_str_list *));
+	st->list = gc_malloc(sizeof(t_str_list *));
 	*st->list = NULL;
 	st->p = arg;
 	st->segment_start = arg;

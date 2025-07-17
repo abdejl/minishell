@@ -10,7 +10,7 @@ char **env_to_array(t_env *env_list)
 
     while (tmp && ++size)
         tmp = tmp->next;
-    envp = malloc(sizeof(char *) * (size + 1));
+    envp = gc_malloc(sizeof(char *) * (size + 1));
     if (!envp)
         return (NULL);
     tmp = env_list;
@@ -53,7 +53,7 @@ t_env *get_env_node(t_env *env_list, char *key)
 
 t_env *new_env_node(char *key, char *value)
 {
-	t_env *node = malloc(sizeof(t_env));
+	t_env *node = gc_malloc(sizeof(t_env));
 	if (!node)
 		return NULL;
 	node->key = ft_strdup(key);

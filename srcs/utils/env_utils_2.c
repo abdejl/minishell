@@ -36,7 +36,7 @@ void	add_env(t_env **env_list, char *key, char *value)
 	t_env	*new;
 	t_env	*tmp;
 
-	new = malloc(sizeof(t_env));
+	new = gc_malloc(sizeof(t_env));
 	if (!new)
 		return ;
 	new->key = ft_strdup(key);

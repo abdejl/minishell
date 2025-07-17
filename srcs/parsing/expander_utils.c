@@ -19,7 +19,7 @@ void	append_str_node(t_str_list **list, char *str)
 
 	if (!str)
 		return ;
-	new_node = malloc(sizeof(t_str_list));
+	new_node = gc_malloc(sizeof(t_str_list));
 	if (!new_node)
 		return ;
 	new_node->str = str;

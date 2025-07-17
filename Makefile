@@ -35,7 +35,9 @@ SRCS = srcs/main.c \
        srcs/utils/pipe_utils.c\
        srcs/utils/builtins_utils.c \
        srcs/utils/free_utils.c \
-       srcs/utils/free_utils_2.c
+       srcs/utils/free_utils_2.c\
+       srcs/utils/libft_utils.c\
+       srcs/utils/garbage_collector.c
 
 
 CC = gcc
