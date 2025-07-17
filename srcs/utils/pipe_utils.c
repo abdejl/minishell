@@ -2,7 +2,9 @@
 
 pid_t fork_process(void)
 {
-    pid_t pid = fork();
+    pid_t pid;
+
+	pid =  fork();
     if (pid == -1)
         ft_putstr_fd("minishell: fork", STDERR_FILENO);
     return pid;
