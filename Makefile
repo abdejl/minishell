@@ -19,6 +19,7 @@ SRCS = srcs/main.c \
        srcs/execution/handle_cmd.c \
        srcs/execution/handle_pipes.c \
        srcs/execution/check_redirections.c \
+       srcs/execution/heredoc.c\
        srcs/parsing/lexer.c \
        srcs/parsing/parser.c \
        srcs/parsing/parsing_utils.c \

@@ -134,13 +134,41 @@ int	exec_external(t_shell *shell, t_cmd *cmd)
 	}
 }
 
+void ft_handle_cmd(t_cmd *cmd)
+{
+    int i;
+    int first_arg_idx;
+
+    if (cmd && cmd->args)
+    {
+        first_arg_idx = 0;
+        while (cmd->args[first_arg_idx] && cmd->args[first_arg_idx][0] == '\0')
+            first_arg_idx++;
+        if (first_arg_idx > 0)
+        {
+            i = 0;
+            while (cmd->args[first_arg_idx + i])
+            {
+                cmd->args[i] = cmd->args[first_arg_idx + i];
+                i++;
+            }
+            while (i < first_arg_idx + i)
+            {
+                free(cmd->args[i]);
+                cmd->args[i] = NULL;
+                i++;
+            }
+        }
+    }
+}
 
 int handle_cmd(t_shell *shell, t_cmd *cmd)
 {
     pid_t pid;
 
+    ft_handle_cmd(cmd);
     if (!cmd || !cmd->args || !cmd->args[0])
-        return (1);
+        return (0);
     if (is_builtin(cmd) && !cmd->next && !cmd->redirs)
         return (exec_builtin(shell, cmd));
     pid = fork();

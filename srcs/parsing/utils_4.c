@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:29:58 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/17 21:58:43 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/18 09:49:23 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ void add_arg(t_cmd *cmd, char *arg)
 int add_redirect(t_cmd *cmd, int type, char *file)
 {
     t_redirect *new_redir;
+    t_redirect *last;
 
     if (!cmd || !file)
         return 0;
@@ -63,7 +64,15 @@ int add_redirect(t_cmd *cmd, int type, char *file)
         free(new_redir);
         return 0;
     }
-    new_redir->next = cmd->redirs;
-    cmd->redirs = new_redir;
+    new_redir->next = NULL;
+    if (!cmd->redirs)
+        cmd->redirs = new_redir;
+    else
+    {
+        last = cmd->redirs;
+        while (last->next)
+            last = last->next;
+        last->next = new_redir;
+    }
     return 1;
 }

@@ -12,6 +12,35 @@
 
 #include "minishell.h"
 
+static void	cleanup_empty_args(t_cmd *cmd)
+{
+	int		read_idx;
+	int		write_idx;
+	char	**args;
+
+	if (!cmd || !cmd->args)
+		return ;
+	args = cmd->args;
+	read_idx = 0;
+	while (args[read_idx] && args[read_idx][0] == '\0')
+	{
+		free(args[read_idx]);
+		read_idx++;
+	}
+	write_idx = 0;
+	while (args[read_idx])
+	{
+		args[write_idx] = args[read_idx];
+		read_idx++;
+		write_idx++;
+	}
+	while (write_idx < read_idx)
+	{
+		args[write_idx] = NULL;
+		write_idx++;
+	}
+}
+
 static void	expand_args(t_cmd *cmd, t_shell *shell)
 {
 	char	*expanded_str;
@@ -60,6 +89,7 @@ void	expander(t_cmd *cmds, t_shell *shell)
 	{
 		expand_args(current_cmd, shell);
 		expand_redirs(current_cmd, shell);
+		cleanup_empty_args(current_cmd);
 		current_cmd = current_cmd->next;
 	}
 }

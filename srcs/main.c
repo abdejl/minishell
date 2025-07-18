@@ -83,7 +83,7 @@ int	main(int ac, char **av, char **envp)
 	shell.env_list = init_env_list(envp);
 	shell.exit_status = 0;
 	minishell_loop(&shell);
-	rl_clear_history();
-	ft_free_env_list(shell.env_list);
+	// rl_clear_history();
+	// ft_free_env_list(shell.env_list);
 	return (shell.exit_status);
 }
