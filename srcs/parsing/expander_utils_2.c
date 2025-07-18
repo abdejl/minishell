@@ -12,11 +12,6 @@
 
 #include "minishell.h"
 
-int	is_expandable(char c)
-{
-    return (ft_isalnum(c) || c == '_' || c == '?');
-}
-
 void	process_quote(t_expand_state *state)
 {
 	if (state->p > state->segment_start)
@@ -66,7 +61,6 @@ char	*expand_and_join(char *arg, t_shell *shell)
 		}
 		st.p++;
 	}
-//...
 	if (st.p > st.segment_start)
 		append_str_node(st.list, \
 			ft_substr(st.segment_start, 0, st.p - st.segment_start));
@@ -101,6 +95,6 @@ char	*expand_heredoc_line(char *line, t_shell *shell)
 	if (p > segment_start)
 		append_str_node(&list_head, ft_substr(segment_start, 0, p - segment_start));
 	result = join_str_list(list_head);
-	free_str_list(list_head); // Free the temporary list
+	free_str_list(list_head);
 	return (result);
 }

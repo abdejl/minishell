@@ -180,4 +180,3 @@ int handle_cmd(t_shell *shell, t_cmd *cmd)
     shell->exit_status = errno;
     return (shell->exit_status);
 }
-

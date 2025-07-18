@@ -16,6 +16,11 @@ int handle_append_redirect(t_redirect *redir)
 {
 	int fd;
 
+	if (redir->file[0] == '\0')
+	{
+		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
+		return (-1);
+	}
 	fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd < 0)
 	{
@@ -31,6 +36,11 @@ static int	handle_input_redirect(t_redirect *redir)
 {
 	int	fd;
 
+	if (redir->file[0] == '\0')
+	{
+		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
+		return (-1);
+	}
 	fd = open(redir->file, O_RDONLY);
 	if (fd < 0)
 	{
@@ -48,6 +58,11 @@ static int	handle_output_redirect(t_redirect *redir, int flags)
 {
 	int	fd;
 
+	if (redir->file[0] == '\0')
+	{
+		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
+		return (-1);
+	}
 	fd = open(redir->file, flags, 0644);
 	if (fd < 0)
 	{
