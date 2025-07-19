@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipe_utils.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/18 20:45:53 by brbaazi           #+#    #+#             */
+/*   Updated: 2025/07/18 20:45:56 by brbaazi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 pid_t fork_process(void)
@@ -57,7 +69,7 @@ int create_pipe(int pipe_fd[2])
 {
     if (pipe(pipe_fd) == -1)
     {
-        ft_putstr_fd("minishell: pipe", STDERR_FILENO);
+        perror("minishell: pipe");
         return 1;
     }
     return 0;

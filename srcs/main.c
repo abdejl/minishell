@@ -83,7 +83,17 @@ int	main(int ac, char **av, char **envp)
 	shell.env_list = init_env_list(envp);
 	shell.exit_status = 0;
 	minishell_loop(&shell);
-	// rl_clear_history();
-	// ft_free_env_list(shell.env_list);
 	return (shell.exit_status);
 }
+
+//<hdhd | <hdhdd
+//sleep 10 | ls
+// minishell> hdh'
+// minishell: hdh: command not found
+// minishell> 
+
+//minishell> export a=test
+//minishell> echo $a
+
+//minishell> 
+//cat <Makefile <test <test2 >hh <<a | cat >test3

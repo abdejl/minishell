@@ -6,21 +6,16 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 10:23:21 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/18 10:23:21 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/19 09:50:17 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int handle_append_redirect(t_redirect *redir)
+int	handle_append_redirect(t_redirect *redir)
 {
-	int fd;
+	int	fd;
 
-	if (redir->file[0] == '\0')
-	{
-		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
-		return (-1);
-	}
 	fd = open(redir->file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd < 0)
 	{
@@ -29,24 +24,18 @@ int handle_append_redirect(t_redirect *redir)
 	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
-	return(0);
+	return (0);
 }
 
 static int	handle_input_redirect(t_redirect *redir)
 {
 	int	fd;
 
-	if (redir->file[0] == '\0')
-	{
-		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
-		return (-1);
-	}
 	fd = open(redir->file, O_RDONLY);
 	if (fd < 0)
 	{
-		ft_putstr_fd("minishell: ", STDERR_FILENO);
-		ft_putstr_fd(redir->file, STDERR_FILENO);
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+		print_error("minishell: ", redir->file, ": No such file or directory\n");
+		return (-1);
 		return (-1);
 	}
 	dup2(fd, STDIN_FILENO);
@@ -58,11 +47,6 @@ static int	handle_output_redirect(t_redirect *redir, int flags)
 {
 	int	fd;
 
-	if (redir->file[0] == '\0')
-	{
-		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
-		return (-1);
-	}
 	fd = open(redir->file, flags, 0644);
 	if (fd < 0)
 	{
@@ -76,7 +60,6 @@ static int	handle_output_redirect(t_redirect *redir, int flags)
 	close(fd);
 	return (0);
 }
-
 
 int	check_redirections(t_cmd *cmd)
 {
@@ -94,12 +77,14 @@ int	check_redirections(t_cmd *cmd)
 		}
 		else if (redir->type == TOKEN_REDIR_OUT)
 		{
-			if (handle_output_redirect(redir, O_WRONLY | O_CREAT | O_TRUNC) == -1)
+			if (handle_output_redirect(redir, O_WRONLY | O_CREAT | O_TRUNC)
+				== -1)
 				return (-1);
 		}
 		else if (redir->type == TOKEN_APPEND)
 		{
-			if (handle_output_redirect(redir, O_WRONLY | O_CREAT | O_APPEND) == -1)
+			if (handle_output_redirect(redir, O_WRONLY | O_CREAT | O_APPEND)
+				== -1)
 				return (-1);
 		}
 		else if (redir->type == TOKEN_HEREDOC)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:17:50 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/16 10:46:46 by brbaazi          ###   ########.fr       */
+/*   Updated: 2025/07/19 09:29:28 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ static int	handle_argument(t_shell *shell, char *arg)
 	if (!is_valid_identifier(key))
 		return (handle_invalid(shell, key, value, arg));
 	existing = get_env_node(shell->env_list, key);
-	if(!existing)
-		return(1);
 	update_or_add(shell, existing, key, value);
 	free(key);
 	if (value)

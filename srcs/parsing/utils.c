@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:05:27 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/17 11:35:14 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/19 11:26:56 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ char	*extract_quoted_string(char **input, t_shell *shell)
 
     if (**input != quote_type)
     {
-        print_syntax_error("unclosed quote");
+        print_error("minishell: ", *input, "unclosed quote\n");
+        //print_syntax_error("unclosed quote");
         return (NULL);
     }
     result = ft_strndup(start, *input - start);

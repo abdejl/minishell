@@ -36,8 +36,10 @@ SRCS = srcs/main.c \
        srcs/utils/pipe_utils.c\
        srcs/utils/builtins_utils.c \
        srcs/utils/free_utils.c \
+       srcs/utils/handle_utils.c\
        srcs/utils/free_utils_2.c\
        srcs/utils/libft_utils.c\
+       srcs/utils/print_error.c\
        srcs/utils/garbage_collector.c
 
 

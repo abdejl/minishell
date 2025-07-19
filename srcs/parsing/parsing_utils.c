@@ -98,3 +98,20 @@ void print_syntax_error(char *token)
         ft_putstr_fd("newline", STDERR_FILENO);
     ft_putstr_fd("'\n", STDERR_FILENO);
 }
+
+t_token	*handle_quoted_string(char **input, t_token *tokens)
+{
+	char	*quoted_content;
+
+	t_shell	shell;
+	shell.exit_status = 0;
+	shell.env_list = NULL;
+	quoted_content = extract_quoted_string(input, &shell);
+	if (!quoted_content)
+	{
+		free_tokens(tokens);
+		return (NULL);
+	}
+	add_token(&tokens, quoted_content, TOKEN_WORD);
+	return (tokens);
+}

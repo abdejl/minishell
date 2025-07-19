@@ -193,8 +193,9 @@ char    *ft_strndup(const char *s, size_t n);
 char    *strjoin_free(char *s1, char *s2);
 char    **env_to_array(t_env *env_list);
 void	free_str_list(t_str_list *list);
-void *gc_malloc(size_t size);
-void gc_free_all(void);
+void    *gc_malloc(size_t size);
+void    gc_free_all(void);
+void	print_error(char *prefix, char *target, char *message);
 
 /* ---------- Signals ---------- */
 
@@ -214,6 +215,12 @@ int     ft_strcmp(const char *s1, const char *s2);
 char	*ft_strdup(const char *s);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strjoin(char const *s1, char const *s2);
+
+
+
+void	handle_execve_error(char *path, char **envp);
+void	exec_child(t_shell *shell, t_cmd *cmd);
+
 
 
 int create_pipe(int pipe_fd[2]);

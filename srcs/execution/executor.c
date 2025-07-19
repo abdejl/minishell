@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   executor.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/18 20:45:18 by brbaazi           #+#    #+#             */
+/*   Updated: 2025/07/18 20:45:18 by brbaazi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-int executor(t_shell *shell, t_cmd *cmd_list)
+int	executor(t_shell *shell, t_cmd *cmd_list)
 {
 	int		status;
 	t_cmd	*segment_head;
