@@ -12,6 +12,11 @@
 
 #include "minishell.h"
 
+int	is_expandable(char c)
+{
+	return (ft_isalnum(c) || c == '_' || c == '?');
+}
+
 void	append_str_node(t_str_list **list, char *str)
 {
 	t_str_list	*new_node;
@@ -57,7 +62,6 @@ char	*join_str_list(t_str_list *list)
 		ft_strlcat(result, current->str, total_len + 1);
 		current = current->next;
 	}
-	// free_str_list(list);
 	return (result);
 }
 

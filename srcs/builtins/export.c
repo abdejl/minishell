@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 13:17:50 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/19 09:29:28 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/20 10:23:56 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,13 +36,12 @@ static void	update_or_add(t_shell *shell, t_env *existing, char *key,
 		{
 			free(existing->value);
 			existing->value = ft_strdup(value);
-			if(!existing->value)
-				return;
+			if (!existing->value)
+				return ;
 		}
 	}
 	else
 		add_env(&shell->env_list, key, value);
-
 }
 
 static int	handle_argument(t_shell *shell, char *arg)
@@ -69,7 +68,7 @@ int	ft_export(t_shell *shell, t_cmd *cmd)
 	i = 1;
 	if (!cmd->args[1])
 		return (print_and_return(shell->env_list));
-	shell->exit_status= 0;
+	shell->exit_status = 0;
 	while (cmd->args[i])
 	{
 		if (handle_argument(shell, cmd->args[i]) == 1)

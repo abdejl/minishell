@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:30:31 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/17 21:07:47 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/07/20 09:38:34 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 char	*extract_word(char **str)
 {
 	char	*start;
-	char	*word;
 	int		len;
 
 	start = *str;
@@ -23,13 +22,10 @@ char	*extract_word(char **str)
 	while (start[len] && !is_white_space(start[len]) && !is_operator(start[len])
 		&& !is_quote(start[len]))
 	{
-		if (start[len] == '\\' && start[len + 1])
-			len++;
 		len++;
 	}
-	word = ft_strndup(start, len);
 	*str += len;
-	return (word);
+	return (ft_strndup(start, len));
 }
 
 char	*extract_operator(char **str)

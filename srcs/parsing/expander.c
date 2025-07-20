@@ -80,6 +80,33 @@ static void	expand_redirs(t_cmd *cmd, t_shell *shell)
 	}
 }
 
+char	*expand_and_join(char *arg, t_shell *shell)
+{
+	t_expand_state	st;
+	char			*result;
+
+	init_expand_state(&st, arg, shell);
+	while (*st.p)
+	{
+		if ((*st.p == '\'' && !st.in_d_quotes)
+			|| (*st.p == '\"' && !st.in_s_quotes))
+			process_quote(&st);
+		else if (*st.p == '$' && !st.in_s_quotes && is_expandable(*(st.p + 1)))
+		{
+			process_dollar(&st);
+			continue ;
+		}
+		st.p++;
+	}
+	if (st.p > st.segment_start)
+		append_str_node(st.list, \
+			ft_substr(st.segment_start, 0, st.p - st.segment_start));
+	result = join_str_list(*st.list);
+	free_str_list(*st.list);
+	free(st.list);
+	return (result);
+}
+
 void	expander(t_cmd *cmds, t_shell *shell)
 {
 	t_cmd	*current_cmd;
