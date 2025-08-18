@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 11:08:45 by abjellal          #+#    #+#             */
-/*   Updated: 2024/11/19 21:51:28 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/18 08:14:54 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "../includes/minishell.h"
 
 static int	count_word(const char *s, char c)
 {
@@ -56,7 +57,7 @@ static char	*allocate_word(const char *s, int len)
 
 	if (!s || len < 0)
 		return (NULL);
-	word = malloc(len + 1);
+	word = gc_malloc((len + 1), 1);
 	if (!word)
 		return (NULL);
 	i = 0;
@@ -95,7 +96,7 @@ char	**ft_split(const char *s, char c)
 	if (!s)
 		return (NULL);
 	words = count_word(s, c);
-	p = (char **)malloc((words + 1) * sizeof(char *));
+	p = (char **)gc_malloc((words + 1) * sizeof(char *), 1);
 	if (!p)
 		return (NULL);
 	j = 0;
@@ -113,17 +114,3 @@ char	**ft_split(const char *s, char c)
 	p[j] = NULL;
 	return (p);
 }
-
-/*int main()
-{
-	char str[] = "       hello world    ";
-	char c = ' ';
-	int i;
-	i = 0;
-	char **result = ft_split(str, c);
-	while (result[i])
-	{
-		printf("%s\n", result[i]);
-		i++;
-	}
-}*/

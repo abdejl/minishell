@@ -6,79 +6,102 @@
 /*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 20:49:41 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/18 20:49:50 by brbaazi          ###   ########.fr       */
+/*   Updated: 2025/08/17 16:01:04 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	read_heredoc_input(t_redirect *redir, t_shell *shell)
+void	heredoc_child_process(t_redirect *redir, t_shell *shell, int pipefd[2])
 {
-	int		fd[2];
-	char	*line;
-	char	*expanded_line;
-
-	if (pipe(fd) == -1)
-		return (-1);
-	while (1)
-	{
-		line = readline("> ");
-		if (!line || ft_strcmp(line, redir->file) == 0)
-		{
-			if (line)
-				free(line);
-			break ;
-		}
-		expanded_line = expand_heredoc_line(line, shell);
-		ft_putendl_fd(expanded_line, fd[1]);
-		free(line);
-		free(expanded_line);
-	}
-	close(fd[1]);
-	return (fd[0]);
+	signal_flag(1);
+	handle_signals();
+	close(pipefd[0]);
+	heredoc_loop(redir, shell, pipefd[1]);
+	close(pipefd[1]);
+	cleanup_and_exit(0);
 }
 
-int	process_heredocs(t_cmd *cmd_list, t_shell *shell)
+static int	handle_signaled_child(int status, t_shell *shell, int pipefd[2])
 {
-	t_redirect	*redir;
-
-	while (cmd_list)
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 	{
-		redir = cmd_list->redirs;
-		while (redir)
-		{
-			if (redir->type == TOKEN_HEREDOC)
-			{
-				redir->heredoc_fd = read_heredoc_input(redir, shell);
-				if (redir->heredoc_fd < 0)
-					return (-1);
-			}
-			redir = redir->next;
-		}
-		cmd_list = cmd_list->next;
+		close(pipefd[0]);
+		shell->exit_status = 130;
+		return (-1);
 	}
 	return (0);
 }
 
-int	handle_heredoc(t_redirect *redir)
+static int	handle_exited_child(int status, t_shell *shell, int pipefd[2])
 {
-	int		fd[2];
-	char	*line;
+	int	exit_code;
 
-	if (pipe(fd) == -1)
-		return (-1);
+	if (WIFEXITED(status))
+	{
+		exit_code = WEXITSTATUS(status);
+		if (exit_code == 1)
+		{
+			close(pipefd[0]);
+			shell->exit_status = 130;
+			return (-1);
+		}
+		else if (exit_code == 130)
+		{
+			close(pipefd[0]);
+			shell->exit_status = 130;
+			return (-1);
+		}
+		else if (exit_code == 0)
+		{
+			shell->exit_status = 0;
+			return (pipefd[0]);
+		}
+	}
+	return (close(pipefd[0]), -1);
+}
+
+int	heredoc_parent_process(pid_t pid, t_shell *shell, int pipefd[2])
+{
+	int	status;
+	int	result;
+
+	(void)pid;
+	close(pipefd[1]);
+	waitpid(pid, &status, 0);
+	signal_flag(0);
+	handle_signals();
+	result = handle_signaled_child(status, shell, pipefd);
+	if (result != 0)
+		return (result);
+	return (handle_exited_child(status, shell, pipefd));
+}
+
+void	heredoc_loop(t_redirect *redir, t_shell *shell, int write_fd)
+{
+	char	*line;
+	char	*delim;
+
+	delim = redir->file;
+	delim = remove_soh(delim);
 	while (1)
 	{
 		line = readline("> ");
-		if (!line || ft_strcmp(line, redir->file) == 0)
+		if (!line)
+		{
+			printf("warning: here-document delimited by end-of-file\n");
+			cleanup_and_exit(0);
+			break ;
+		}
+		if (ft_strcmp(line, delim) == 0)
 		{
 			free(line);
 			break ;
 		}
-		write(fd[1], line, ft_strlen(line));
-		write(fd[1], "\n", 1);
+		if (shell->expand_in_herdoc)
+			expnd(shell, line, write_fd);
+		else
+			ft_putendl_fd(line, write_fd);
 		free(line);
 	}
-	close(fd[1]);
-	return (fd[0]);
 }

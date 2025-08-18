@@ -37,7 +37,7 @@ void	process_dollar(t_expand_state *state)
 
 void	init_expand_state(t_expand_state *st, char *arg, t_shell *sh)
 {
-	st->list = gc_malloc(sizeof(t_str_list *));
+	st->list = gc_malloc(sizeof(t_str_list *), 1);
 	*st->list = NULL;
 	st->p = arg;
 	st->segment_start = arg;
@@ -79,6 +79,5 @@ char	*expand_heredoc_line(char *line, t_shell *shell)
 		append_str_node(&list_head,
 			ft_substr(segment_start, 0, p - segment_start));
 	result = join_str_list(list_head);
-	free_str_list(list_head);
 	return (result);
 }

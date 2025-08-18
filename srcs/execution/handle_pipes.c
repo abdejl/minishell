@@ -3,64 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   handle_pipes.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/18 20:34:10 by brbaazi           #+#    #+#             */
-/*   Updated: 2025/07/20 10:18:25 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/15 14:01:26 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	parent_close_fds(t_cmd *cmd, int pipe_fd[2], int *in_fd)
+static int	*allocate_status_array(int cmd_count)
 {
-	if (*in_fd != STDIN_FILENO)
-		close(*in_fd);
-	if (cmd->pipe_out)
-	{
-		close(pipe_fd[1]);
-		*in_fd = pipe_fd[0];
-	}
-}
-
-static int	fork_and_execute(t_shell *shell, t_cmd *cmd, pid_t *pids,
-	int *in_fd)
-{
-	int	pipe_fd[2];
+	int	*status;
 	int	i;
 
+	status = gc_malloc(sizeof(int) * cmd_count, 1);
+	if (!status)
+		return (NULL);
 	i = 0;
-	while (cmd)
+	while (i < cmd_count)
 	{
-		if (cmd->pipe_out)
-			create_pipe(pipe_fd);
-		pids[i] = fork_process();
-		if (pids[i] == 0)
-			setup_child_process(shell, cmd, pipe_fd, *in_fd);
-		parent_close_fds(cmd, pipe_fd, in_fd);
-		if (!cmd->pipe_out)
-			break ;
-		cmd = cmd->next;
+		status[i] = 0;
 		i++;
 	}
-	return (i + 1);
+	return (status);
 }
 
 static int	wait_for_children(pid_t *pids, int cmd_count, t_shell *shell)
 {
-	int	status;
-	int	i;
+	int	exit_value;
+	int	appeared;
+	int	*status;
 
-	i = 0;
-	while (i < cmd_count)
+	exit_value = 0;
+	appeared = 0;
+	status = allocate_status_array(cmd_count);
+	if (!status)
+		return (1);
+	wait_all_children(pids, cmd_count, status, &appeared);
+	if (WIFSIGNALED(status[cmd_count - 1]))
 	{
-		waitpid(pids[i], &status, 0);
-		i++;
+		exit_value = WTERMSIG(status[cmd_count - 1]);
+		shell->exit_status = exit_value + 128;
 	}
-	if (WIFEXITED(status))
-		shell->exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		shell->exit_status = 128 + WTERMSIG(status);
+	else if (WIFEXITED(status[cmd_count - 1]))
+	{
+		exit_value = WEXITSTATUS(status[cmd_count - 1]);
+		shell->exit_status = exit_value;
+	}
+	if (appeared == 2)
+		write(1, "\n", 1);
+	else if (appeared == 3 && shell->exit_status != 0)
+		write(1, "Quit (core dumped)\n", 19);
 	return (shell->exit_status);
 }
 
@@ -71,12 +65,14 @@ int	execute_pipeline(t_shell *shell, t_cmd *cmd)
 	int		in_fd;
 
 	cmd_count = count_commands(cmd);
-	pids = malloc(sizeof(pid_t) * cmd_count);
+	pids = gc_malloc(sizeof(pid_t) * cmd_count, 1);
 	if (!pids)
 		return (1);
 	in_fd = STDIN_FILENO;
+	signal(SIGINT, SIG_IGN);
 	fork_and_execute(shell, cmd, pids, &in_fd);
 	wait_for_children(pids, cmd_count, shell);
-	free(pids);
+	signal_flag(0);
+	handle_signals();
 	return (shell->exit_status);
 }

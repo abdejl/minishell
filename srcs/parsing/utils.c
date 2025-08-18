@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 13:05:27 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/20 10:58:24 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/15 15:31:39 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,5 +56,5 @@ char	*extract_quoted_string(char **input, t_shell *shell)
 
 int	is_operator(char c)
 {
-	return (c == '|' || c == '<' || c == '>' || c == ';' || c == '&');
+	return (c == '|' || c == '<' || c == '>');
 }

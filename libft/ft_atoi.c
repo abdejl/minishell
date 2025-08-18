@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 17:34:29 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/15 21:15:23 by brbaazi          ###   ########.fr       */
+/*   Updated: 2025/07/30 16:48:23 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,3 @@ int	ft_atoi(const char *str)
 	}
 	return (result * sign);
 }
-

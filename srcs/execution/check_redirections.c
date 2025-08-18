@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 10:23:21 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/20 12:04:52 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/16 11:32:06 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	handle_append_redirect(t_redirect *redir)
 {
 	int	fd;
+
 	if (redir->file[0] == '\0')
 	{
 		ft_putendl_fd("minishell: ambiguous redirect", STDERR_FILENO);
@@ -43,8 +44,8 @@ static int	handle_input_redirect(t_redirect *redir)
 	fd = open(redir->file, O_RDONLY);
 	if (fd < 0)
 	{
-		print_error("minishell: ", redir->file, ": No such file or directory\n");
-		return (-1);
+		print_error("minishell: ", redir->file,
+			": No such file or directory\n");
 		return (-1);
 	}
 	dup2(fd, STDIN_FILENO);

@@ -12,98 +12,52 @@
 
 #include "minishell.h"
 
-static void	cleanup_empty_args(t_cmd *cmd)
+static void	handle_expansion_loop(t_expand_state *st)
 {
-	int		read_idx;
-	int		write_idx;
-	char	**args;
-
-	if (!cmd || !cmd->args)
-		return ;
-	args = cmd->args;
-	read_idx = 0;
-	while (args[read_idx] && args[read_idx][0] == '\0')
+	while (*st->p)
 	{
-		free(args[read_idx]);
-		read_idx++;
-	}
-	write_idx = 0;
-	while (args[read_idx])
-	{
-		args[write_idx] = args[read_idx];
-		read_idx++;
-		write_idx++;
-	}
-	while (write_idx < read_idx)
-	{
-		args[write_idx] = NULL;
-		write_idx++;
-	}
-}
-
-static void	expand_args(t_cmd *cmd, t_shell *shell)
-{
-	char	*expanded_str;
-	int		i;
-
-	i = 0;
-	while (cmd->args && cmd->args[i])
-	{
-		expanded_str = expand_and_join(cmd->args[i], shell);
-		free(cmd->args[i]);
-		if (expanded_str)
-			cmd->args[i] = expanded_str;
-		else
-			cmd->args[i] = ft_strdup("");
-		i++;
-	}
-}
-
-static void	expand_redirs(t_cmd *cmd, t_shell *shell)
-{
-	t_redirect	*redir;
-	char		*expanded_str;
-
-	redir = cmd->redirs;
-	while (redir)
-	{
-		if (redir->type != TOKEN_HEREDOC)
+		if ((*st->p == '\'' && !st->in_d_quotes)
+			|| (*st->p == '\"' && !st->in_s_quotes))
+			process_quote(st);
+		else if (*st->p == '$' && !st->in_s_quotes
+			&& is_expandable(*(st->p + 1)))
 		{
-			expanded_str = expand_and_join(redir->file, shell);
-			free(redir->file);
-			if (expanded_str)
-				redir->file = expanded_str;
-			else
-				redir->file = ft_strdup("");
+			process_dollar(st);
+			continue ;
 		}
-		redir = redir->next;
+		st->p++;
 	}
+}
+
+static void	handle_segment_append(t_expand_state *st)
+{
+	if (st->p > st->segment_start)
+		append_str_node(st->list,
+			ft_substr(st->segment_start, 0, st->p - st->segment_start));
+}
+
+static char	*handle_quoted_empty(char *result, int was_quoted_var)
+{
+	if (was_quoted_var && (!result || result[0] == '\0'))
+	{
+		return (ft_strdup("\x01"));
+	}
+	return (result);
 }
 
 char	*expand_and_join(char *arg, t_shell *shell)
 {
 	t_expand_state	st;
 	char			*result;
+	int				was_quoted_var;
 
+	was_quoted_var = (arg[0] == '"' && arg[1] == '$'
+			&& ft_strchr(arg + 2, '"'));
 	init_expand_state(&st, arg, shell);
-	while (*st.p)
-	{
-		if ((*st.p == '\'' && !st.in_d_quotes)
-			|| (*st.p == '\"' && !st.in_s_quotes))
-			process_quote(&st);
-		else if (*st.p == '$' && !st.in_s_quotes && is_expandable(*(st.p + 1)))
-		{
-			process_dollar(&st);
-			continue ;
-		}
-		st.p++;
-	}
-	if (st.p > st.segment_start)
-		append_str_node(st.list, \
-			ft_substr(st.segment_start, 0, st.p - st.segment_start));
+	handle_expansion_loop(&st);
+	handle_segment_append(&st);
 	result = join_str_list(*st.list);
-	free_str_list(*st.list);
-	free(st.list);
+	result = handle_quoted_empty(result, was_quoted_var);
 	return (result);
 }
 
@@ -116,7 +70,6 @@ void	expander(t_cmd *cmds, t_shell *shell)
 	{
 		expand_args(current_cmd, shell);
 		expand_redirs(current_cmd, shell);
-		cleanup_empty_args(current_cmd);
 		current_cmd = current_cmd->next;
 	}
 }

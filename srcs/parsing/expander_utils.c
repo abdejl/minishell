@@ -24,9 +24,9 @@ void	append_str_node(t_str_list **list, char *str)
 
 	if (!str)
 		return ;
-	new_node = gc_malloc(sizeof(t_str_list));
+	new_node = gc_malloc(sizeof(t_str_list), 1);
 	if (!new_node)
-		return ;
+		gc_malloc(sizeof(t_str_list), 0);
 	new_node->str = str;
 	new_node->next = NULL;
 	if (!*list)
@@ -53,9 +53,10 @@ char	*join_str_list(t_str_list *list)
 		total_len += ft_strlen(current->str);
 		current = current->next;
 	}
-	result = ft_calloc(total_len + 1, sizeof(char));
+	result = gc_malloc(total_len + 1, sizeof(char));
 	if (!result)
 		return (NULL);
+	result[0] = '\0';
 	current = list;
 	while (current)
 	{
@@ -84,6 +85,7 @@ char	*get_var_value(char **str_ptr, t_shell *shell)
 {
 	char	*var_name;
 	char	*value;
+	char	*temp;
 
 	(*str_ptr)++;
 	var_name = get_var_name(*str_ptr);
@@ -92,11 +94,12 @@ char	*get_var_value(char **str_ptr, t_shell *shell)
 	*str_ptr += ft_strlen(var_name);
 	if (ft_strcmp(var_name, "?") == 0)
 	{
-		free(var_name);
-		return (ft_itoa(shell->exit_status));
+		temp = ft_itoa(shell->exit_status);
+		value = ft_strdup(temp);
+		free(temp);
+		return (value);
 	}
 	value = get_env_value(shell->env_list, var_name);
-	free(var_name);
 	if (!value)
 		return (ft_strdup(""));
 	return (ft_strdup(value));

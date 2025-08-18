@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 11:30:31 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/20 09:38:34 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/15 15:29:25 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,11 @@ char	*extract_word(char **str)
 
 	start = *str;
 	len = 0;
-	while (start[len] && !is_white_space(start[len]) && !is_operator(start[len])
-		&& !is_quote(start[len]))
+	while (start[len] && !is_white_space(start[len])
+		&& !is_operator(start[len]))
 	{
+		if (is_quote(start[len]))
+			break ;
 		len++;
 	}
 	*str += len;
@@ -30,7 +32,7 @@ char	*extract_word(char **str)
 
 char	*extract_operator(char **str)
 {
-	const char	*ops[] = {">>", "<<", "|", ">", "<", ";", "&", NULL};
+	const char	*ops[] = {">>", "<<", "|", ">", "<", NULL};
 	int			i;
 
 	i = 0;
@@ -66,10 +68,6 @@ int	get_operator_type(char *op)
 {
 	if (ft_strcmp(op, "|") == 0)
 		return (TOKEN_PIPE);
-	if (ft_strcmp(op, ";") == 0)
-		return (TOKEN_SEMICOLON);
-	if (ft_strcmp(op, "&") == 0)
-		return (TOKEN_AMPERSAND);
 	if (ft_strcmp(op, ">") == 0)
 		return (TOKEN_REDIR_OUT);
 	if (ft_strcmp(op, ">>") == 0)
@@ -86,9 +84,9 @@ void	add_token(t_token **token_list, char *value, t_token_type type)
 	t_token	*new_token;
 	t_token	*last;
 
-	new_token = gc_malloc(sizeof(t_token));
+	new_token = gc_malloc(sizeof(t_token), 1);
 	if (!new_token)
-		return ;
+		gc_malloc(0, 0);
 	new_token->value = value;
 	new_token->type = type;
 	new_token->next = NULL;

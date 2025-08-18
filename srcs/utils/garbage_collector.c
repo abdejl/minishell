@@ -1,46 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   garbage_collector.c                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/30 12:02:28 by abjellal          #+#    #+#             */
+/*   Updated: 2025/08/18 11:25:36 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-static t_mem_node *g_mem_list = NULL;
-
-void gc_free_all(void)
+void	*gc_malloc(size_t size, int mode)
 {
-    t_mem_node  *current;
-    t_mem_node  *tmp;
+	static t_list	*temp_head = NULL;
+	t_list			*node;
+	void			*ptr;
 
-    current = g_mem_list;
-    while (current)
-    {
-        tmp = current->next;
-        free(current->ptr);
-        free(current);
-        current = tmp;
-    }
-    g_mem_list = NULL;
-}
-
-void *gc_malloc(size_t size)
-{
-    void        *ptr;
-    t_mem_node  *new_node;
-
-    ptr = malloc(size);
-    if (!ptr)
-    {
-        // On malloc failure, free everything allocated so far and exit.
-        // This makes error handling much simpler.
-        gc_free_all();
-        // You might want to print an error message here
-        exit(EXIT_FAILURE);
-    }
-    new_node = malloc(sizeof(t_mem_node));
-    if (!new_node)
-    {
-        free(ptr);
-        gc_free_all();
-        exit(EXIT_FAILURE);
-    }
-    new_node->ptr = ptr;
-    new_node->next = g_mem_list;
-    g_mem_list = new_node;
-    return (ptr);
+	if (mode == 0)
+	{
+		ft_lstclear(&temp_head, free);
+		temp_head = NULL;
+		return (NULL);
+	}
+	ptr = malloc(size);
+	if (ptr == NULL)
+	{
+		gc_malloc(0, 0);
+		return (NULL);
+	}
+	node = ft_lstnew(ptr);
+	if (node == NULL)
+	{
+		free(ptr);
+		gc_malloc(0, 0);
+		return (NULL);
+	}
+	ft_lstadd_back(&temp_head, node);
+	return (ptr);
 }

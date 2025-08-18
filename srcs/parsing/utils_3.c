@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_3.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:30:15 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/20 10:49:17 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:24:46 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ t_cmd	*new_command(void)
 {
 	t_cmd	*cmd;
 
-	cmd = gc_malloc(sizeof(t_cmd));
+	cmd = gc_malloc(sizeof(t_cmd), 1);
 	if (!cmd)
-		return (NULL);
+		gc_malloc(sizeof(t_cmd), 0);
 	cmd->args = NULL;
 	cmd->redirs = NULL;
 	cmd->next = NULL;
@@ -35,9 +35,9 @@ int	cmd_add_redirect(t_cmd *cmd, int type, char *file)
 
 	if (!cmd || !file)
 		return (0);
-	redir = gc_malloc(sizeof(t_redirect));
+	redir = gc_malloc(sizeof(t_redirect), 1);
 	if (!redir)
-		return (0);
+		gc_malloc(sizeof(t_redirect), 0);
 	redir->type = type;
 	redir->file = ft_strdup(file);
 	if (!redir->file)

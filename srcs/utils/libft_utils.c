@@ -1,95 +1,106 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   libft_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/30 11:48:55 by abjellal          #+#    #+#             */
+/*   Updated: 2025/08/16 21:05:01 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char    *ft_strndup(const char *s, size_t n)
+void	ft_lstadd_back(t_list **lst, t_list *new)
 {
-    char    *dup;
-    size_t  len;
-    size_t  i;
+	t_list	*tmp;
 
-    len = 0;
-    while (s[len] && len < n)
-        len++;
-    dup = (char *)gc_malloc(len + 1);
-    if (!dup)
-        return (NULL);
-    i = 0;
-    while (i < len)
-    {
-        dup[i] = s[i];
-        i++;
-    }
-    dup[len] = '\0';
-    return (dup);
+	if (lst == NULL || new == NULL)
+		return ;
+	if (*lst == NULL)
+	{
+		*lst = new;
+		return ;
+	}
+	tmp = *lst;
+	while (tmp->next != NULL)
+		tmp = tmp->next;
+	tmp->next = new;
+}
+
+t_list	*ft_lstnew(void *content)
+{
+	t_list	*node;
+
+	node = (t_list *)malloc(sizeof(t_list));
+	if (node == NULL)
+	{
+		return (NULL);
+	}
+	node->content = content;
+	node->next = NULL;
+	return (node);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void *))
+{
+	t_list	*tmp;
+	t_list	*next;
+
+	if (lst == NULL)
+		return ;
+	tmp = *lst;
+	while (tmp != NULL)
+	{
+		next = tmp->next;
+		if (del != NULL)
+			del(tmp->content);
+		free(tmp);
+		tmp = next;
+	}
+	*lst = NULL;
+}
+
+char	*ft_strndup(const char *s, size_t n)
+{
+	char	*dup;
+	size_t	len;
+	size_t	i;
+
+	len = 0;
+	while (s[len] && len < n)
+		len++;
+	dup = (char *)gc_malloc(len + 1, 1);
+	if (!dup)
+		return (NULL);
+	i = 0;
+	while (i < len)
+	{
+		dup[i] = s[i];
+		i++;
+	}
+	dup[len] = '\0';
+	return (dup);
 }
 
 char	*ft_strdup(const char *s)
 {
 	char	*str;
 	size_t	i;
-	size_t	j;
 
 	i = 0;
 	while (s[i])
 		i++;
-	str = (char *)gc_malloc(i + 1);
+	str = (char *)gc_malloc(i + 1, 1);
 	if (!str)
 		return (NULL);
-	j = 0;
-	while (s[j])
-	{
-		str[j] = s[j];
-		j++;
-	}
-	str[j] = '\0';
-	return (str);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*new;
-	size_t	slen;
-	size_t	finish;
-
-	if (!s)
-		return (NULL);
-	slen = ft_strlen(s);
-	finish = 0;
-	if (start < slen)
-		finish = slen - start;
-	if (finish > len)
-		finish = len;
-	new = (char *)gc_malloc(sizeof(char) * (finish + 1));
-	if (!new)
-		return (NULL);
-	ft_strlcpy(new, s + start, finish + 1);
-	return (new);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2)
-{
-	size_t	i;
-	size_t	k;
-	char	*ptr;
-
-	if (s1 == NULL || s2 == NULL)
-	{
-		return (NULL);
-	}
 	i = 0;
-	ptr = gc_malloc(ft_strlen(s1) + ft_strlen(s2) * sizeof(char) + 1);
-	if (ptr == NULL)
-		return (NULL);
-	while (i < ft_strlen(s1))
+	while (s[i])
 	{
-		ptr[i] = s1[i];
+		str[i] = s[i];
 		i++;
 	}
-	k = 0;
-	while (k < ft_strlen(s2))
-	{
-		ptr[i + k] = s2[k];
-		k++;
-	}
-	ptr[i + k] = '\0';
-	return (ptr);
+	str[i] = '\0';
+	return (str);
 }

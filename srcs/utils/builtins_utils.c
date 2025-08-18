@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/30 11:49:12 by abjellal          #+#    #+#             */
+/*   Updated: 2025/08/16 20:59:36 by abjellal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "minishell.h"
+
 static void	split_key_value_no_equal(char *arg, char **key, char **value)
 {
 	*key = ft_strdup(arg);
 	if (!*key)
 	{
 		*value = NULL;
-		return;
+		return ;
 	}
 	*value = NULL;
 }
@@ -19,16 +31,16 @@ void	split_key_value(char *arg, char **key, char **value)
 	if (equal)
 	{
 		*key = ft_substr(arg, 0, equal - arg);
-		if(!*key)
+		if (!*key)
 		{
 			*value = NULL;
-			return;
+			return ;
 		}
 		*value = ft_strdup(equal + 1);
-		if(!*value)
+		if (!*value)
 		{
 			free(*key);
-			return;
+			return ;
 		}
 	}
 	else
@@ -41,43 +53,42 @@ void	print_exported_env(t_env *env_list)
 {
 	while (env_list)
 	{
-		ft_putstr_fd("declare -x ", STDOUT);
-		ft_putstr_fd(env_list->key, STDOUT);
+		printf("declare -x ");
+		printf("%s", env_list->key);
 		if (env_list->value)
 		{
-			ft_putstr_fd("=\"", STDOUT);
-			ft_putstr_fd(env_list->value, STDOUT);
-			ft_putstr_fd("\"", STDOUT);
+			printf("=\"");
+			printf("%s", env_list->value);
+			printf("\"");
 		}
-		ft_putchar_fd('\n', STDOUT);
+		printf("\n");
 		env_list = env_list->next;
 	}
 }
 
-int is_valid_identifier(char *key)
+int	is_valid_identifier(char *key)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
-        return (0);
-    if(ft_strchr(key , '='))
-        return(0);
-    while (key[i])
-    {
-        if (!ft_isalnum(key[i]) && key[i] != '_')
-            return (0);
-        i++;
-    }
-    return (1);
+	i = 0;
+	if (!key || (!ft_isalpha(key[0]) && key[0] != '_'))
+		return (0);
+	if (ft_strchr(key, '='))
+		return (0);
+	while (key[i])
+	{
+		if (!ft_isalnum(key[i]) && key[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
-int handle_invalid_key(char *key, t_shell *shell)
+int	handle_invalid_key(char *key, t_shell *shell)
 {
-    ft_putstr_fd("minishell: export: `", STDERR);
-    ft_putstr_fd(key, STDERR);
-    ft_putendl_fd("': not a valid identifier", STDERR);
-   	shell->exit_status = 1;
-    return (1);
+	ft_putstr_fd("minishell: export: `", STDERR);
+	ft_putstr_fd(key, STDERR);
+	ft_putendl_fd("': not a valid identifier", STDERR);
+	shell->exit_status = 1;
+	return (1);
 }
-

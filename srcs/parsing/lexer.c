@@ -21,8 +21,6 @@ static char	*str_append_and_free(char *original, char *addition)
 	if (!addition)
 		return (original);
 	new_str = ft_strjoin(original, addition);
-	free(original);
-	free(addition);
 	return (new_str);
 }
 
@@ -44,6 +42,12 @@ static char	*process_quoted_segment(char **input)
 		return (NULL);
 	}
 	len++;
+	if (len == 2 && temp_input[0] == temp_input[1])
+	{
+		part = ft_strdup("\x01");
+		*input += len;
+		return (part);
+	}
 	part = ft_strndup(temp_input, len);
 	*input += len;
 	return (part);
@@ -54,19 +58,18 @@ static int	handle_word_token(char **input, t_token **list, t_shell *shell)
 	char	*current_word;
 	char	*part;
 
-	(void)shell;
 	current_word = ft_strdup("");
 	if (!current_word)
 		return (0);
+	shell->expand_in_herdoc = 1;
 	while (**input && !is_white_space(**input) && !is_operator(**input))
 	{
 		if (is_quote(**input))
 		{
+			shell->expand_in_herdoc = 0;
 			part = process_quoted_segment(input);
 			if (!part)
-			{
-				return (free(current_word), 0);
-			}
+				return (0);
 		}
 		else
 			part = extract_word(input);
@@ -95,9 +98,6 @@ t_token	*lexer(char *input, t_shell *shell)
 			success = handle_word_token(&input, &list, shell);
 	}
 	if (!success)
-	{
-		free_tokens(list);
 		return (NULL);
-	}
 	return (list);
 }

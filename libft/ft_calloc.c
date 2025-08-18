@@ -3,13 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 09:32:36 by abjellal          #+#    #+#             */
-/*   Updated: 2024/11/16 15:21:42 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/18 08:03:37 by brbaazi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/minishell.h"
 #include "libft.h"
 
 void	*ft_calloc(size_t count, size_t size)
@@ -23,7 +24,7 @@ void	*ft_calloc(size_t count, size_t size)
 		size = 1;
 	}
 	b = count * size;
-	p = malloc(b);
+	p = gc_malloc(b, 1);
 	if (p == NULL)
 		return (NULL);
 	else
@@ -33,14 +34,14 @@ void	*ft_calloc(size_t count, size_t size)
 
 /*int main()
 {
-    size_t count =5 ;
-    size_t size = sizeof(int);
-    char *ptr = ft_calloc(count, size);
+	size_t count =5 ;
+	size_t size = sizeof(int);
+	char *ptr = ft_calloc(count, size);
 
-    size_t i = 0;
-    while (i < count)
-    {
-        printf("%d\n", ptr[i]);
-        i++;
-    }
+	size_t i = 0;
+	while (i < count)
+	{
+		printf("%d\n", ptr[i]);
+		i++;
+	}
 }*/

@@ -1,41 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brbaazi <brbaazi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/09 15:39:57 by abjellal          #+#    #+#             */
+/*   Updated: 2025/08/17 22:56:04 by brbaazi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
-
-// void print_cmd_list(t_cmd *cmd_list) {
-//     t_cmd *cmd = cmd_list;
-//     int i;
-
-//     while (cmd) {
-//         printf("=== Command ===\n");
-
-//         // Arguments
-//         printf("Args: ");
-//         if (cmd->args) {
-//             for (i = 0; cmd->args[i]; i++) {
-//                 printf("[%s] ", cmd->args[i]);
-//             }
-//         } else {
-//             printf("(no args)");
-//         }
-//         printf("\n");
-
-//         // Pipe
-//         printf("Pipe out: %s\n", cmd->pipe_out ? "Yes" : "No");
-
-//         // Background
-//         printf("Background: %s\n", cmd->background ? "Yes" : "No");
-
-//         // Redirections
-//         printf("Redirections:\n");
-//         t_redirect *redir = cmd->redirs;
-//         while (redir) {
-//             // Assuming `t_redirect` has fields like type and file
-//             printf("  Type: %d, File: %s\n", redir->type, redir->file); // Modify based on your struct
-//             redir = redir->next;
-//         }
-
-//         cmd = cmd->next;
-//     }
-// }
 
 static void	minishell_exec_line(char *line, t_shell *shell)
 {
@@ -48,12 +23,14 @@ static void	minishell_exec_line(char *line, t_shell *shell)
 	cmd_list = parser(tokens, shell);
 	if (cmd_list)
 	{
-		 //print_cmd_list(cmd_list);
 		expander(cmd_list, shell);
 		executor(shell, cmd_list);
-		free_cmds(cmd_list);
+		signal_flag(0);
 	}
-	free_tokens(tokens);
+	else if (tokens)
+	{
+		shell->exit_status = 2;
+	}
 }
 
 void	minishell_loop(t_shell *shell)
@@ -62,15 +39,21 @@ void	minishell_loop(t_shell *shell)
 
 	while (1)
 	{
-		set_signal_parent();
+		signal_flag(0);
+		handle_signals();
 		input = readline("minishell> ");
 		if (!input)
 		{
 			ft_putendl_fd("exit", 1);
 			break ;
 		}
+		if (*input == '\0')
+		{
+			free(input);
+			continue ;
+		}
 		minishell_exec_line(input, shell);
-		free(input);
+		free (input);
 	}
 }
 
@@ -82,18 +65,8 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	shell.env_list = init_env_list(envp);
 	shell.exit_status = 0;
+	get_shell_pointer(&shell);
 	minishell_loop(&shell);
+	cleanup_function();
 	return (shell.exit_status);
 }
-
-//<hdhd | <hdhdd
-//sleep 10 | ls
-// minishell> hdh'
-// minishell: hdh: command not found
-// minishell> 
-
-//minishell> export a=test
-//minishell> echo $a
-
-//minishell> 
-//cat <Makefile <test <test2 >hh <<a | cat >test3

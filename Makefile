@@ -1,10 +1,7 @@
 NAME = minishell
 
-
 INCLUDES = includes/
 LIBFT_PATH = libft/
-GNL_PATH = gnl/
-
 
 SRCS = srcs/main.c \
        srcs/builtins/cd.c \
@@ -12,14 +9,17 @@ SRCS = srcs/main.c \
        srcs/builtins/env.c \
        srcs/builtins/exit.c \
        srcs/builtins/export.c \
-       srcs/builtins/builtins_fun.c\
        srcs/builtins/pwd.c \
        srcs/builtins/unset.c \
+       srcs/builtins/exit_utils.c \
        srcs/execution/executor.c \
        srcs/execution/handle_cmd.c \
+       srcs/execution/handle_cmd_utils.c \
        srcs/execution/handle_pipes.c \
+       srcs/execution/pipe_utils.c\
        srcs/execution/check_redirections.c \
        srcs/execution/heredoc.c\
+       srcs/execution/heredoc_utils.c\
        srcs/parsing/lexer.c \
        srcs/parsing/parser.c \
        srcs/parsing/parsing_utils.c \
@@ -29,21 +29,24 @@ SRCS = srcs/main.c \
        srcs/parsing/utils_4.c \
        srcs/parsing/expander_utils.c \
        srcs/parsing/expander_utils_2.c \
+       srcs/parsing/expander_utils_3.c \
        srcs/parsing/expander.c \
+       srcs/parsing/utils_1.c\
        srcs/utils/signal_handler.c \
        srcs/utils/env_utils.c\
        srcs/utils/env_utils_2.c\
-       srcs/utils/pipe_utils.c\
+       srcs/utils/pipe_fork.c\
        srcs/utils/builtins_utils.c \
        srcs/utils/free_utils.c \
        srcs/utils/handle_utils.c\
        srcs/utils/free_utils_2.c\
        srcs/utils/libft_utils.c\
+       srcs/utils/libft_utils_2.c\
        srcs/utils/print_error.c\
        srcs/utils/garbage_collector.c
 
 
-CC = gcc
+CC = gcc -g
 CFLAGS = -Wall -Wextra -Werror
 
 READLINE_INC = -I/usr/include -I/usr/local/opt/readline/include
@@ -79,8 +82,4 @@ fclean: clean
 
 re: fclean all
 
-norm:
-	@norminette $(SRCS) $(INCLUDES)*.h
-	@make -C $(LIBFT_PATH) norm
-
-.PHONY: all clean fclean re norm
+.PHONY: all clean fclean re

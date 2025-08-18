@@ -6,7 +6,7 @@
 /*   By: abjellal <abjellal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 11:29:58 by abjellal          #+#    #+#             */
-/*   Updated: 2025/07/20 10:50:53 by abjellal         ###   ########.fr       */
+/*   Updated: 2025/08/16 11:23:48 by abjellal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void	add_arg(t_cmd *cmd, char *arg)
 	i = 0;
 	while (cmd->args && cmd->args[i])
 		i++;
-	new_args = (char **)gc_malloc(sizeof(char *) * (i + 2));
+	new_args = (char **)gc_malloc(sizeof(char *) * (i + 2), 1);
 	if (!new_args)
-		return ;
+		gc_malloc(sizeof(char *) * (i + 2), 0);
 	i = 0;
 	while (cmd->args && cmd->args[i])
 	{
@@ -53,9 +53,9 @@ int	add_redirect(t_cmd *cmd, int type, char *file)
 
 	if (!cmd || !file)
 		return (0);
-	new_redir = (t_redirect *)gc_malloc(sizeof(t_redirect));
+	new_redir = (t_redirect *)gc_malloc(sizeof(t_redirect), 1);
 	if (!new_redir)
-		return (0);
+		gc_malloc(sizeof(t_redirect), 0);
 	new_redir->type = type;
 	new_redir->file = ft_strdup(file);
 	if (!new_redir->file)
